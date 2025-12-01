@@ -1,58 +1,36 @@
-import { useState } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider } from "./context/AuthProvider";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
 import "./App.css";
 
 function App() {
-  const [healthStatus, setHealthStatus] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const checkHealth = async () => {
-    setLoading(true);
-    setError(null);
-    setHealthStatus(null);
-
-    try {
-      const response = await fetch("http://localhost:8000/health");
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      setHealthStatus(data.status);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Error desconocido");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
-    <div className="container">
-      <h1>Plan Producción</h1>
-      <h2>FASE 0 - Prueba de Conexión</h2>
-
-      <div className="card">
-        <button onClick={checkHealth} disabled={loading}>
-          {loading ? "Verificando..." : "Probar conexión con Backend"}
-        </button>
-
-        {healthStatus && (
-          <div className="status success">
-            ✅ Backend respondió: <strong>{healthStatus}</strong>
-          </div>
-        )}
-
-        {error && (
-          <div className="status error">
-            ❌ Error: <strong>{error}</strong>
-          </div>
-        )}
-      </div>
-
-      <p className="instructions">
-        Asegurate de tener el backend corriendo en{" "}
-        <code>http://localhost:8000</code>
-      </p>
-    </div>
+    <BrowserRouter>
+      <AuthProvider>
+        <Routes>
+          {/* Ruta de login */}
+          <Route path="/login" element={<Login />} />
+          
+          {/* Rutas protegidas */}
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          
+          {/* Redirigir raíz al dashboard (que a su vez redirige al login si no está autenticado) */}
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          
+          {/* Cualquier otra ruta redirige al dashboard */}
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        </Routes>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
 
