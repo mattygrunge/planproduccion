@@ -15,6 +15,10 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspa
 from app.core.database import engine, SessionLocal, Base
 from app.core.security import get_password_hash
 from app.models.user import User, Role
+from app.models.sector import Sector
+from app.models.linea import Linea
+from app.models.producto import Producto
+from app.models.cliente import Cliente
 
 
 def init_database():

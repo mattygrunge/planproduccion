@@ -1,8 +1,11 @@
+import { Link } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import "./Dashboard.css";
 
 export default function Dashboard() {
   const { user, logout } = useAuth();
+
+  const isAdmin = user?.role_name === "admin";
 
   return (
     <div className="dashboard-container">
@@ -38,12 +41,87 @@ export default function Dashboard() {
               <span className="detail-value">{user?.role_name}</span>
             </div>
           </div>
+        </div>
 
-          <div className="phase-info">
-            <p>🚧 <strong>Fase 1 completada</strong></p>
-            <p>Este es un dashboard vacío de prueba. Las funcionalidades se agregarán en las próximas fases.</p>
+        {/* Acceso al Timeline y Historial - disponible para todos los usuarios */}
+        <div className="main-panel">
+          <h3>📊 Vista de Producción</h3>
+          <p>Visualiza el estado actual de las líneas de producción y consulta el historial.</p>
+          
+          <div className="admin-links">
+            <Link to="/timeline" className="admin-link timeline-link">
+              <span className="admin-link-icon">📊</span>
+              <span className="admin-link-text">
+                <strong>Timeline de Producción</strong>
+                <small>Ver estado de líneas en tiempo real</small>
+              </span>
+            </Link>
+            
+            <Link to="/historial" className="admin-link historial-link">
+              <span className="admin-link-icon">📈</span>
+              <span className="admin-link-text">
+                <strong>Historial de Producción</strong>
+                <small>Consultar y exportar datos históricos</small>
+              </span>
+            </Link>
           </div>
         </div>
+
+        {isAdmin && (
+          <div className="admin-panel">
+            <h3>🔧 Panel de Administración</h3>
+            <p>Como administrador, tenés acceso a gestionar los datos maestros del sistema.</p>
+            
+            <div className="admin-links">
+              <Link to="/admin/sectores" className="admin-link">
+                <span className="admin-link-icon">🏭</span>
+                <span className="admin-link-text">
+                  <strong>Sectores</strong>
+                  <small>Gestionar sectores de producción</small>
+                </span>
+              </Link>
+              
+              <Link to="/admin/lineas" className="admin-link">
+                <span className="admin-link-icon">🔗</span>
+                <span className="admin-link-text">
+                  <strong>Líneas</strong>
+                  <small>Gestionar líneas de producción</small>
+                </span>
+              </Link>
+              
+              <Link to="/admin/productos" className="admin-link">
+                <span className="admin-link-icon">📦</span>
+                <span className="admin-link-text">
+                  <strong>Productos</strong>
+                  <small>Gestionar catálogo de productos</small>
+                </span>
+              </Link>
+              
+              <Link to="/admin/clientes" className="admin-link">
+                <span className="admin-link-icon">👥</span>
+                <span className="admin-link-text">
+                  <strong>Clientes</strong>
+                  <small>Gestionar base de clientes</small>
+                </span>
+              </Link>
+              
+              <Link to="/admin/estados-linea" className="admin-link">
+                <span className="admin-link-icon">🔄</span>
+                <span className="admin-link-text">
+                  <strong>Estados de Línea</strong>
+                  <small>Registrar estados de producción</small>
+                </span>
+              </Link>
+            </div>
+          </div>
+        )}
+
+        {!isAdmin && (
+          <div className="phase-info">
+            <p>🚧 <strong>Acceso limitado</strong></p>
+            <p>Contacta al administrador para obtener más permisos si es necesario.</p>
+          </div>
+        )}
       </main>
     </div>
   );

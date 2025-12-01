@@ -122,3 +122,120 @@
   font-size: 0.9rem;
   opacity: 0.9;
 }
+
+/* Panel Principal (Timeline) */
+.main-panel {
+  background: white;
+  border-radius: 12px;
+  padding: 32px;
+  margin-top: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border-left: 4px solid #48bb78;
+}
+
+.main-panel h3 {
+  color: #1a1a2e;
+  margin: 0 0 8px 0;
+  font-size: 1.25rem;
+}
+
+.main-panel > p {
+  color: #666;
+  margin: 0 0 24px 0;
+}
+
+.timeline-link {
+  background: linear-gradient(135deg, #e6fffa 0%, #b2f5ea 100%);
+  border: 2px solid #38b2ac;
+}
+
+.timeline-link:hover {
+  background: linear-gradient(135deg, #b2f5ea 0%, #81e6d9 100%);
+  border-color: #319795;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(56, 178, 172, 0.25);
+}
+
+/* Panel de Administración */
+.admin-panel {
+  background: white;
+  border-radius: 12px;
+  padding: 32px;
+  margin-top: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.admin-panel h3 {
+  color: #1a1a2e;
+  margin: 0 0 8px 0;
+  font-size: 1.25rem;
+}
+
+.admin-panel > p {
+  color: #666;
+  margin: 0 0 24px 0;
+}
+
+.admin-links {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.admin-link {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 10px;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+}
+
+.admin-link:hover {
+  background: #e9ecef;
+  border-color: #4f46e5;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
+}
+
+.admin-link-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.admin-link-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.admin-link-text strong {
+  color: #1a1a2e;
+  font-size: 1rem;
+}
+
+.admin-link-text small {
+  color: #6b7280;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 600px) {
+  .admin-links {
+    grid-template-columns: 1fr;
+  }
+  
+  .dashboard-header {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+  }
+  
+  .user-info {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
