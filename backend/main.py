@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -12,10 +13,78 @@ from app.api.lotes import router as lotes_router
 from app.api.historial import router as historial_router
 from app.api.auditoria import router as auditoria_router
 from app.core.config import settings
+from app.core.database import engine, SessionLocal, Base
+from app.core.security import get_password_hash
+from app.core.id_generator import generar_codigo_usuario, generar_codigo_rol
+from app.models.user import User, Role
+
+
+def init_database():
+    """Inicializa la base de datos con tablas, roles y usuario admin."""
+    print("🔧 Inicializando base de datos...")
+    
+    # Crear todas las tablas
+    Base.metadata.create_all(bind=engine)
+    print("✅ Tablas verificadas/creadas.")
+    
+    db = SessionLocal()
+    
+    try:
+        # Crear roles por defecto si no existen
+        roles_data = [
+            {"name": "admin", "description": "Administrador del sistema con acceso total"},
+            {"name": "supervisor", "description": "Supervisor con acceso a reportes y gestión"},
+            {"name": "operador", "description": "Operador con acceso básico"},
+        ]
+        
+        for role_data in roles_data:
+            existing_role = db.query(Role).filter(Role.name == role_data["name"]).first()
+            if not existing_role:
+                codigo = generar_codigo_rol(db)
+                role = Role(codigo=codigo, **role_data)
+                db.add(role)
+                db.commit()
+                print(f"  ✅ Rol '{role_data['name']}' creado (id={role.id}, codigo={codigo})")
+        
+        # Crear usuario admin si no existe
+        admin_role = db.query(Role).filter(Role.name == "admin").first()
+        existing_admin = db.query(User).filter(User.username == "admin").first()
+        
+        if not existing_admin and admin_role:
+            codigo = generar_codigo_usuario(db)
+            admin_user = User(
+                codigo=codigo,
+                email="admin@planproduccion.local",
+                username="admin",
+                hashed_password=get_password_hash("admin123"),
+                full_name="Administrador del Sistema",
+                is_active=True,
+                role_id=admin_role.id
+            )
+            db.add(admin_user)
+            db.commit()
+            print(f"  ✅ Usuario admin creado (usuario: admin, contraseña: admin123)")
+        
+        print("🎉 Base de datos inicializada correctamente.")
+        
+    except Exception as e:
+        print(f"❌ Error durante la inicialización: {e}")
+        db.rollback()
+    finally:
+        db.close()
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Inicialización al arrancar la aplicación."""
+    init_database()
+    yield
+
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
-    version=settings.VERSION
+    version=settings.VERSION,
+    lifespan=lifespan
 )
 
 # Configuración de CORS para permitir llamadas desde el frontend
