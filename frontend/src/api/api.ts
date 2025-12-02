@@ -112,6 +112,7 @@ export interface UsersListParams {
 // Interfaces para Maestros
 export interface Sector {
   id: number;
+  codigo: string;
   nombre: string;
   descripcion: string | null;
   activo: boolean;
@@ -133,6 +134,7 @@ export interface SectorUpdate {
 
 export interface Linea {
   id: number;
+  codigo: string;
   nombre: string;
   descripcion: string | null;
   sector_id: number;

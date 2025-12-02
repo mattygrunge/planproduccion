@@ -214,7 +214,7 @@ const Clientes = () => {
                       </td>
                       <td className="actions-cell">
                         <button
-                          className="btn btn-sm btn-edit"
+                          className="btn btn-sm btn-secondary"
                           onClick={() => openEditModal(item)}
                         >
                           Editar

@@ -302,7 +302,7 @@ const Lineas = () => {
                       {/* Líneas del sector */}
                       {!collapsedSectors.has(grupo.sector.id) && grupo.lineas.map((item) => (
                         <tr key={item.id}>
-                          <td><strong>{(item as unknown as { codigo?: string }).codigo || `#${item.id}`}</strong></td>
+                          <td><strong>{item.codigo || `SN${item.id}`}</strong></td>
                           <td>{item.nombre}</td>
                           <td>{item.descripcion || "-"}</td>
                           <td>

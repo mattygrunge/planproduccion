@@ -166,7 +166,7 @@ const Sectores = () => {
             <table className="data-table">
               <thead>
                 <tr>
-                  <th>ID</th>
+                  <th>Código</th>
                   <th>Nombre</th>
                   <th>Descripción</th>
                   <th>Estado</th>
@@ -183,7 +183,7 @@ const Sectores = () => {
                 ) : (
                   sectores.map((item) => (
                     <tr key={item.id}>
-                      <td>{item.id}</td>
+                      <td><strong>{item.codigo || `SC${item.id}`}</strong></td>
                       <td>{item.nombre}</td>
                       <td>{item.descripcion || "-"}</td>
                       <td>
@@ -195,7 +195,7 @@ const Sectores = () => {
                       </td>
                       <td className="actions-cell">
                         <button
-                          className="btn btn-sm btn-edit"
+                          className="btn btn-sm btn-secondary"
                           onClick={() => openEditModal(item)}
                         >
                           Editar
