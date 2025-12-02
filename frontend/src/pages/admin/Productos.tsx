@@ -295,7 +295,7 @@ const Productos = () => {
                         </span>
                       </td>
                       <td className="actions-cell">
-                        <button className="btn btn-sm btn-secondary" onClick={() => openEditModal(item)}>
+                        <button className="btn btn-sm btn-edit" onClick={() => openEditModal(item)}>
                           Editar
                         </button>
                         <button className="btn btn-sm btn-danger" onClick={() => setDeleteConfirm(item.id)}>

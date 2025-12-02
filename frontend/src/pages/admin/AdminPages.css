@@ -304,6 +304,15 @@
   background: #4A9AC7;
 }
 
+.btn-edit {
+  background: #3b82f6;
+  color: var(--color-white);
+}
+
+.btn-edit:hover {
+  background: #2563eb;
+}
+
 .btn-sm {
   padding: var(--spacing-xs) var(--spacing-sm);
   font-size: var(--font-size-sm);

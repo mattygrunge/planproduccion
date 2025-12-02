@@ -274,7 +274,7 @@ const Usuarios = () => {
         </div>
       )}
 
-      <div className="filters-bar">
+      <div className="filters-bar filters-inline">
         <div className="search-box">
           <Search size={18} />
           <input
@@ -284,27 +284,27 @@ const Usuarios = () => {
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
-        <div className="filter-group">
-          <select
-            value={filterActive}
-            onChange={(e) => setFilterActive(e.target.value)}
-          >
-            <option value="all">Todos los estados</option>
-            <option value="active">Activos</option>
-            <option value="inactive">Inactivos</option>
-          </select>
-          <select
-            value={filterRole}
-            onChange={(e) => setFilterRole(e.target.value)}
-          >
-            <option value="all">Todos los roles</option>
-            {roles.map((role) => (
-              <option key={role.id} value={role.id}>
-                {role.name}
-              </option>
-            ))}
-          </select>
-        </div>
+        <select
+          value={filterActive}
+          onChange={(e) => setFilterActive(e.target.value)}
+          className="filter-select"
+        >
+          <option value="all">Todos los estados</option>
+          <option value="active">Activos</option>
+          <option value="inactive">Inactivos</option>
+        </select>
+        <select
+          value={filterRole}
+          onChange={(e) => setFilterRole(e.target.value)}
+          className="filter-select"
+        >
+          <option value="all">Todos los roles</option>
+          {roles.map((role) => (
+            <option key={role.id} value={role.id}>
+              {role.name}
+            </option>
+          ))}
+        </select>
       </div>
 
       {loading ? (

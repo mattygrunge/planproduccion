@@ -337,7 +337,7 @@ const EstadosLinea = () => {
                       </td>
                       <td className="actions-cell">
                         <button
-                          className="btn btn-sm btn-secondary"
+                          className="btn btn-sm btn-edit"
                           onClick={() => openEditModal(item)}
                         >
                           Editar

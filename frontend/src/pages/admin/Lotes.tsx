@@ -443,8 +443,8 @@ export default function Lotes() {
                 </td>
                 <td>
                   <div className="action-buttons">
-                    <button
-                      className="btn btn-sm btn-secondary"
+                        <button
+                      className="btn btn-sm btn-edit"
                       onClick={() => openEditModal(lote)}
                       title="Editar"
                     >

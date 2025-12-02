@@ -194,7 +194,17 @@
 
 .sidebar.closed .nav-item {
   justify-content: center;
-  padding: var(--spacing-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+  margin: 1px 0;
+}
+
+/* When sidebar is collapsed, add top margin to nav for spacing */
+.sidebar.closed .sidebar-nav {
+  padding-top: var(--spacing-md);
+}
+
+.sidebar.closed .nav-section {
+  margin-bottom: var(--spacing-xs);
 }
 
 /* Sidebar Footer */

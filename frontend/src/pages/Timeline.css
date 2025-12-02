@@ -192,15 +192,17 @@
   color: var(--color-text);
   position: sticky;
   left: 0;
-  z-index: 10;
+  z-index: 15;
+  width: 200px;
+  min-width: 200px;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
 }
 
 .sector-header .sector-name {
-  width: 200px;
-  min-width: 200px;
   display: flex;
   align-items: center;
   gap: var(--spacing-xs);
+  white-space: nowrap;
 }
 
 .sector-header .sector-icon {
@@ -328,25 +330,43 @@
 
 .estado-block .estado-content {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-sm);
   overflow: hidden;
 }
 
 .estado-block .estado-tipo {
   font-weight: 600;
   font-size: 11px;
+  white-space: nowrap;
 }
 
 .estado-block .estado-hora {
   font-size: 10px;
   opacity: 0.9;
+  white-space: nowrap;
 }
 
 .estado-block .estado-obs {
-  font-size: 9px;
+  font-size: 10px;
   opacity: 0.8;
   font-style: italic;
-  margin-top: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px;
+}
+
+/* Show vertical layout only for narrow blocks */
+.estado-block.narrow .estado-content {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+}
+
+.estado-block.narrow .estado-obs {
+  display: none;
 }
 
 /* Estado Colors - Using theme palette */
