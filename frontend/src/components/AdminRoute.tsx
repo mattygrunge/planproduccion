@@ -1,7 +1,12 @@
+import type { ReactNode } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 
-const AdminRoute = () => {
+interface AdminRouteProps {
+  children?: ReactNode;
+}
+
+const AdminRoute = ({ children }: AdminRouteProps) => {
   const { user, isLoading } = useAuth();
 
   if (isLoading) {
@@ -27,7 +32,8 @@ const AdminRoute = () => {
     return <Navigate to="/dashboard" replace />;
   }
 
-  return <Outlet />;
+  // Si tiene children, renderizarlos. Si no, usar Outlet
+  return children ? <>{children}</> : <Outlet />;
 };
 
 export default AdminRoute;

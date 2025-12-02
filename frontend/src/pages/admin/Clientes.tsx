@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Users } from "lucide-react";
 import { clientesApi } from "../../api/api";
 import type {
   Cliente,
@@ -150,7 +151,7 @@ const Clientes = () => {
   return (
     <div className="admin-page">
       <div className="page-header">
-        <h1>👥 Clientes</h1>
+        <h1><Users className="title-icon" size={24} strokeWidth={1.5} /> Clientes</h1>
         <button className="btn btn-primary" onClick={openCreateModal}>
           + Nuevo Cliente
         </button>

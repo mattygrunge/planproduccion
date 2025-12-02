@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Factory } from "lucide-react";
 import { sectoresApi } from "../../api/api";
 import type {
   Sector,
@@ -123,7 +124,7 @@ const Sectores = () => {
   return (
     <div className="admin-page">
       <div className="page-header">
-        <h1>🏭 Sectores</h1>
+        <h1><Factory className="title-icon" size={24} strokeWidth={1.5} /> Sectores</h1>
         <button className="btn btn-primary" onClick={openCreateModal}>
           + Nuevo Sector
         </button>

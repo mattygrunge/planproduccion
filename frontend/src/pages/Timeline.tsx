@@ -1,5 +1,11 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import {
+  Calendar,
+  ChevronLeft,
+  ChevronRight,
+  RefreshCw,
+} from "lucide-react";
+import {
   estadosLineaApi,
   sectoresApi,
   lineasApi,
@@ -223,17 +229,17 @@ function Timeline() {
     <div className="timeline-page">
       {/* Header */}
       <div className="timeline-header">
-        <h1>📊 Timeline de Producción</h1>
+        <h1><Calendar className="title-icon" size={24} strokeWidth={1.5} /> Timeline de Producción</h1>
         <div className="timeline-controls">
           {/* Navegación de fechas */}
           <div className="date-navigation">
-            <button onClick={goToPreviousDay}>◀ Anterior</button>
+            <button onClick={goToPreviousDay}><ChevronLeft size={16} /> Anterior</button>
             <input
               type="date"
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
             />
-            <button onClick={goToNextDay}>Siguiente ▶</button>
+            <button onClick={goToNextDay}>Siguiente <ChevronRight size={16} /></button>
             <button className="btn-today" onClick={goToToday}>
               Hoy
             </button>
@@ -274,7 +280,7 @@ function Timeline() {
             </select>
 
             <button className="btn-refresh" onClick={loadTimelineData}>
-              🔄 Actualizar
+              <RefreshCw size={16} /> Actualizar
             </button>
           </div>
         </div>

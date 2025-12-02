@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "lucide-react";
 import { lineasApi, sectoresApi } from "../../api/api";
 import type {
   Linea,
@@ -147,7 +148,7 @@ const Lineas = () => {
   return (
     <div className="admin-page">
       <div className="page-header">
-        <h1>🔗 Líneas</h1>
+        <h1><Link className="title-icon" size={24} strokeWidth={1.5} /> Líneas</h1>
         <button className="btn btn-primary" onClick={openCreateModal}>
           + Nueva Línea
         </button>

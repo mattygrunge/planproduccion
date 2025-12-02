@@ -1,6 +1,21 @@
 import { useState } from "react";
 import { Link, useLocation, Outlet } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import {
+  Home,
+  Calendar,
+  History,
+  Factory,
+  Link as LinkIcon,
+  Package,
+  Users,
+  BarChart3,
+  ClipboardList,
+  Shield,
+  LogOut,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import "./AdminLayout.css";
 
 const AdminLayout = () => {
@@ -9,19 +24,19 @@ const AdminLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   const menuItems = [
-    { path: "/admin/sectores", label: "Sectores", icon: "🏭" },
-    { path: "/admin/lineas", label: "Líneas", icon: "🔗" },
-    { path: "/admin/productos", label: "Productos", icon: "📦" },
-    { path: "/admin/clientes", label: "Clientes", icon: "👥" },
+    { path: "/admin/sectores", label: "Sectores", icon: Factory },
+    { path: "/admin/lineas", label: "Líneas", icon: LinkIcon },
+    { path: "/admin/productos", label: "Productos", icon: Package },
+    { path: "/admin/clientes", label: "Clientes", icon: Users },
   ];
 
   const operacionesItems = [
-    { path: "/admin/estados-linea", label: "Estados de Línea", icon: "📊" },
-    { path: "/admin/lotes", label: "Lotes", icon: "📋" },
+    { path: "/admin/estados-linea", label: "Estados de Línea", icon: BarChart3 },
+    { path: "/admin/lotes", label: "Lotes", icon: ClipboardList },
   ];
 
   const seguridadItems = [
-    { path: "/admin/auditoria", label: "Auditoría", icon: "🔍" },
+    { path: "/admin/auditoria", label: "Auditoría", icon: Shield },
   ];
 
   const isActive = (path: string) => location.pathname === path;
@@ -29,84 +44,131 @@ const AdminLayout = () => {
   return (
     <div className="admin-layout">
       <aside className={`sidebar ${sidebarOpen ? "open" : "closed"}`}>
+        {/* Header del Sidebar con Logo */}
         <div className="sidebar-header">
-          <h2>📋 Plan Producción</h2>
-          <button
-            className="toggle-btn"
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-          >
-            {sidebarOpen ? "◀" : "▶"}
-          </button>
+          <div className="sidebar-logo">
+            {sidebarOpen ? (
+              <img 
+                src="/assets/logos/logotipo_white.PNG" 
+                alt="AGROFACIL"
+                className="logo-full"
+              />
+            ) : (
+              <img 
+                src="/assets/logos/logo_white.PNG" 
+                alt="AGROFACIL"
+                className="logo-icon"
+              />
+            )}
+          </div>
         </div>
+        
+        {/* Toggle Button */}
+        <button
+          className="toggle-btn sidebar-toggle"
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          title={sidebarOpen ? "Contraer menú" : "Expandir menú"}
+        >
+          {sidebarOpen ? <ChevronLeft size={18} /> : <ChevronRight size={18} />}
+        </button>
 
+        {/* Navegación */}
         <nav className="sidebar-nav">
           <div className="nav-section">
-            <h3>Dashboard</h3>
+            <h3 className="nav-section-title">Dashboard</h3>
             <Link
               to="/dashboard"
               className={`nav-item ${location.pathname === "/dashboard" ? "active" : ""}`}
             >
-              <span className="icon">🏠</span>
+              <Home className="icon" size={20} strokeWidth={1.5} />
               <span className="label">Inicio</span>
+            </Link>
+            <Link
+              to="/timeline"
+              className={`nav-item ${location.pathname === "/timeline" ? "active" : ""}`}
+            >
+              <Calendar className="icon" size={20} strokeWidth={1.5} />
+              <span className="label">Timeline</span>
+            </Link>
+            <Link
+              to="/historial"
+              className={`nav-item ${location.pathname === "/historial" ? "active" : ""}`}
+            >
+              <History className="icon" size={20} strokeWidth={1.5} />
+              <span className="label">Historial</span>
             </Link>
           </div>
 
           <div className="nav-section">
-            <h3>Administración</h3>
-            {menuItems.map((item) => (
-              <Link
-                key={item.path}
-                to={item.path}
-                className={`nav-item ${isActive(item.path) ? "active" : ""}`}
-              >
-                <span className="icon">{item.icon}</span>
-                <span className="label">{item.label}</span>
-              </Link>
-            ))}
+            <h3 className="nav-section-title">Administración</h3>
+            {menuItems.map((item) => {
+              const IconComponent = item.icon;
+              return (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className={`nav-item ${isActive(item.path) ? "active" : ""}`}
+                >
+                  <IconComponent className="icon" size={20} strokeWidth={1.5} />
+                  <span className="label">{item.label}</span>
+                </Link>
+              );
+            })}
           </div>
 
           <div className="nav-section">
-            <h3>Operaciones</h3>
-            {operacionesItems.map((item) => (
-              <Link
-                key={item.path}
-                to={item.path}
-                className={`nav-item ${isActive(item.path) ? "active" : ""}`}
-              >
-                <span className="icon">{item.icon}</span>
-                <span className="label">{item.label}</span>
-              </Link>
-            ))}
+            <h3 className="nav-section-title">Operaciones</h3>
+            {operacionesItems.map((item) => {
+              const IconComponent = item.icon;
+              return (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className={`nav-item ${isActive(item.path) ? "active" : ""}`}
+                >
+                  <IconComponent className="icon" size={20} strokeWidth={1.5} />
+                  <span className="label">{item.label}</span>
+                </Link>
+              );
+            })}
           </div>
 
           <div className="nav-section">
-            <h3>Seguridad</h3>
-            {seguridadItems.map((item) => (
-              <Link
-                key={item.path}
-                to={item.path}
-                className={`nav-item ${isActive(item.path) ? "active" : ""}`}
-              >
-                <span className="icon">{item.icon}</span>
-                <span className="label">{item.label}</span>
-              </Link>
-            ))}
+            <h3 className="nav-section-title">Seguridad</h3>
+            {seguridadItems.map((item) => {
+              const IconComponent = item.icon;
+              return (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className={`nav-item ${isActive(item.path) ? "active" : ""}`}
+                >
+                  <IconComponent className="icon" size={20} strokeWidth={1.5} />
+                  <span className="label">{item.label}</span>
+                </Link>
+              );
+            })}
           </div>
         </nav>
 
+        {/* Footer del Sidebar */}
         <div className="sidebar-footer">
           <div className="user-info">
             <span className="user-name">{user?.full_name || user?.username}</span>
             <span className="user-role">{user?.role_name}</span>
           </div>
           <button className="logout-btn" onClick={logout}>
-            Cerrar Sesión
+            <LogOut size={18} strokeWidth={1.5} />
+            <span>Cerrar Sesión</span>
           </button>
         </div>
       </aside>
 
+      {/* Contenido Principal */}
       <main className="main-content">
-        <Outlet />
+        <div className="content-wrapper">
+          <Outlet />
+        </div>
       </main>
     </div>
   );

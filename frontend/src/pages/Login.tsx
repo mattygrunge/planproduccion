@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Eye, EyeOff } from "lucide-react";
 import { authApi } from "../api/api";
 import { useAuth } from "../hooks/useAuth";
 import "./Login.css";
@@ -7,6 +8,8 @@ import "./Login.css";
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   
@@ -24,7 +27,6 @@ export default function Login() {
       navigate("/dashboard");
     } catch (err) {
       if (err instanceof Error) {
-        // Intentar obtener el mensaje del backend
         const axiosError = err as { response?: { data?: { detail?: string } } };
         setError(axiosError.response?.data?.detail || "Error al iniciar sesión");
       } else {
@@ -38,8 +40,14 @@ export default function Login() {
   return (
     <div className="login-container">
       <div className="login-card">
-        <h1>Plan Producción</h1>
-        <h2>Iniciar Sesión</h2>
+        {/* Logo AGROFACIL */}
+        <div className="login-logo">
+          <img 
+            src="/assets/logos/header_normal.PNG" 
+            alt="AGROFACIL"
+          />
+        </div>
+        <h2>Sistema de Gestión de Planta</h2>
         
         <form onSubmit={handleSubmit}>
           <div className="form-group">
@@ -52,25 +60,53 @@ export default function Login() {
               placeholder="Ingresa tu usuario"
               required
               disabled={loading}
+              autoComplete="username"
             />
           </div>
 
           <div className="form-group">
             <label htmlFor="password">Contraseña</label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Ingresa tu contraseña"
-              required
-              disabled={loading}
-            />
+            <div className="password-input-wrapper">
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Ingresa tu contraseña"
+                required
+                disabled={loading}
+                autoComplete="current-password"
+              />
+              <button
+                type="button"
+                className="password-toggle"
+                onClick={() => setShowPassword(!showPassword)}
+                tabIndex={-1}
+                aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+              >
+                {showPassword ? (
+                  <EyeOff size={18} strokeWidth={1.5} />
+                ) : (
+                  <Eye size={18} strokeWidth={1.5} />
+                )}
+              </button>
+            </div>
+          </div>
+
+          <div className="form-options">
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+              />
+              <span>Mantener sesión iniciada</span>
+            </label>
           </div>
 
           {error && (
             <div className="error-message">
-              ❌ {error}
+              {error}
             </div>
           )}
 

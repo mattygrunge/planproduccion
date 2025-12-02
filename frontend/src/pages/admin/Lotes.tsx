@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { ClipboardList } from "lucide-react";
 import {
   lotesApi,
   productosApi,
@@ -362,7 +363,7 @@ export default function Lotes() {
   return (
     <div className="admin-page">
       <div className="page-header">
-        <h1>Gestión de Lotes</h1>
+        <h1><ClipboardList className="title-icon" size={24} strokeWidth={1.5} /> Gestión de Lotes</h1>
         <button className="btn btn-primary" onClick={openCreateModal}>
           + Nuevo Lote
         </button>

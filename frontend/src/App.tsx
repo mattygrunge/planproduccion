@@ -24,50 +24,26 @@ function App() {
           {/* Ruta de login */}
           <Route path="/login" element={<Login />} />
           
-          {/* Rutas protegidas */}
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
-          
-          {/* Timeline - accesible para usuarios autenticados */}
-          <Route
-            path="/timeline"
-            element={
-              <ProtectedRoute>
-                <Timeline />
-              </ProtectedRoute>
-            }
-          />
-          
-          {/* Historial - accesible para usuarios autenticados */}
-          <Route
-            path="/historial"
-            element={
-              <ProtectedRoute>
-                <Historial />
-              </ProtectedRoute>
-            }
-          />
-          
-          {/* Rutas de administración (solo admin) */}
-          <Route element={<AdminRoute />}>
-            <Route element={<AdminLayout />}>
-              <Route path="/admin/sectores" element={<Sectores />} />
-              <Route path="/admin/lineas" element={<Lineas />} />
-              <Route path="/admin/productos" element={<Productos />} />
-              <Route path="/admin/clientes" element={<Clientes />} />
-              <Route path="/admin/estados-linea" element={<EstadosLinea />} />
-              <Route path="/admin/lotes" element={<Lotes />} />
-              <Route path="/admin/auditoria" element={<Auditoria />} />
-            </Route>
+          {/* Rutas protegidas con sidebar */}
+          <Route element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
+            {/* Dashboard */}
+            <Route path="/dashboard" element={<Dashboard />} />
+            
+            {/* Timeline y Historial - accesible para todos los usuarios autenticados */}
+            <Route path="/timeline" element={<Timeline />} />
+            <Route path="/historial" element={<Historial />} />
+            
+            {/* Rutas de administración (solo admin) - dentro del layout */}
+            <Route path="/admin/sectores" element={<AdminRoute><Sectores /></AdminRoute>} />
+            <Route path="/admin/lineas" element={<AdminRoute><Lineas /></AdminRoute>} />
+            <Route path="/admin/productos" element={<AdminRoute><Productos /></AdminRoute>} />
+            <Route path="/admin/clientes" element={<AdminRoute><Clientes /></AdminRoute>} />
+            <Route path="/admin/estados-linea" element={<AdminRoute><EstadosLinea /></AdminRoute>} />
+            <Route path="/admin/lotes" element={<AdminRoute><Lotes /></AdminRoute>} />
+            <Route path="/admin/auditoria" element={<AdminRoute><Auditoria /></AdminRoute>} />
           </Route>
           
-          {/* Redirigir raíz al dashboard (que a su vez redirige al login si no está autenticado) */}
+          {/* Redirigir raíz al dashboard */}
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
           
           {/* Cualquier otra ruta redirige al dashboard */}

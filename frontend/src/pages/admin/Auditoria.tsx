@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Shield } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import './AdminPages.css';
 import './Auditoria.css';
@@ -168,7 +169,7 @@ export default function Auditoria() {
   return (
     <div className="admin-page auditoria-page">
       <div className="page-header">
-        <h1>📋 Auditoría del Sistema</h1>
+        <h1><Shield className="title-icon" size={24} strokeWidth={1.5} /> Auditoría del Sistema</h1>
         <p className="page-description">
           Registro de todas las operaciones realizadas en el sistema (solo lectura)
         </p>

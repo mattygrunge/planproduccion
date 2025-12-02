@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Package } from "lucide-react";
 import { productosApi } from "../../api/api";
 import type {
   Producto,
@@ -143,7 +144,7 @@ const Productos = () => {
   return (
     <div className="admin-page">
       <div className="page-header">
-        <h1>📦 Productos</h1>
+        <h1><Package className="title-icon" size={24} strokeWidth={1.5} /> Productos</h1>
         <button className="btn btn-primary" onClick={openCreateModal}>
           + Nuevo Producto
         </button>

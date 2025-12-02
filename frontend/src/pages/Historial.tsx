@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { History, Download, Search } from "lucide-react";
 import { historialApi, productosApi } from "../api/api";
 import type {
   Lote,
@@ -161,13 +162,14 @@ export default function Historial() {
   return (
     <div className="historial-page">
       <div className="historial-header">
-        <h1>📊 Historial de Producción</h1>
+        <h1><History className="title-icon" size={24} strokeWidth={1.5} /> Historial de Producción</h1>
         <button
           className="btn btn-export"
           onClick={handleExportarCSV}
           disabled={exporting || lotes.length === 0}
         >
-          {exporting ? "Exportando..." : "📥 Exportar CSV"}
+          <Download size={16} strokeWidth={2} />
+          {exporting ? "Exportando..." : "Exportar CSV"}
         </button>
       </div>
 
@@ -175,7 +177,7 @@ export default function Historial() {
 
       {/* Panel de filtros */}
       <div className="filtros-panel">
-        <h3>🔍 Filtros</h3>
+        <h3><Search className="filter-icon" size={18} strokeWidth={1.5} /> Filtros</h3>
         <form onSubmit={handleAplicarFiltros} className="filtros-form">
           <div className="filtros-grid">
             <div className="filtro-group">

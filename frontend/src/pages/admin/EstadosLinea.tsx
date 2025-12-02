@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Activity } from "lucide-react";
 import {
   estadosLineaApi,
   sectoresApi,
@@ -223,7 +224,7 @@ const EstadosLinea = () => {
   return (
     <div className="admin-page">
       <div className="page-header">
-        <h1>📊 Estados de Línea</h1>
+        <h1><Activity className="title-icon" size={24} strokeWidth={1.5} /> Estados de Línea</h1>
         <button className="btn btn-primary" onClick={openCreateModal}>
           + Nuevo Estado
         </button>
