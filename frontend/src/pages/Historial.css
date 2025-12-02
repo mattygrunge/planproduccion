@@ -155,6 +155,11 @@
   justify-content: center;
   background: var(--color-background-dark);
   border-radius: var(--border-radius-md);
+  color: var(--color-primary);
+}
+
+.stat-icon svg {
+  color: var(--color-primary);
 }
 
 .stat-content {

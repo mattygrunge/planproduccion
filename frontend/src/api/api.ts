@@ -290,7 +290,6 @@ export interface Cliente {
 }
 
 export interface ClienteCreate {
-  codigo: string;
   nombre: string;
   razon_social?: string;
   cuit?: string;
@@ -302,7 +301,6 @@ export interface ClienteCreate {
 }
 
 export interface ClienteUpdate {
-  codigo?: string;
   nombre?: string;
   razon_social?: string;
   cuit?: string;

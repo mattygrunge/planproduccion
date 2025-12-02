@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { History, Download, Search } from "lucide-react";
+import { History, Download, Search, Package, Droplets, LayoutGrid, Tag } from "lucide-react";
 import { historialApi, productosApi } from "../api/api";
 import type {
   Lote,
@@ -239,7 +239,9 @@ export default function Historial() {
       {estadisticas && (
         <div className="estadisticas-panel">
           <div className="stat-card">
-            <div className="stat-icon">📦</div>
+            <div className="stat-icon">
+              <Package size={24} strokeWidth={1.5} />
+            </div>
             <div className="stat-content">
               <div className="stat-value">{estadisticas.total_lotes}</div>
               <div className="stat-label">Lotes</div>
@@ -247,7 +249,9 @@ export default function Historial() {
           </div>
           
           <div className="stat-card">
-            <div className="stat-icon">💧</div>
+            <div className="stat-icon">
+              <Droplets size={24} strokeWidth={1.5} />
+            </div>
             <div className="stat-content">
               <div className="stat-value">{formatNumber(estadisticas.total_litros)}</div>
               <div className="stat-label">Litros Totales</div>
@@ -255,7 +259,9 @@ export default function Historial() {
           </div>
           
           <div className="stat-card">
-            <div className="stat-icon">📋</div>
+            <div className="stat-icon">
+              <LayoutGrid size={24} strokeWidth={1.5} />
+            </div>
             <div className="stat-content">
               <div className="stat-value">{estadisticas.total_pallets}</div>
               <div className="stat-label">Pallets</div>
@@ -263,7 +269,9 @@ export default function Historial() {
           </div>
           
           <div className="stat-card">
-            <div className="stat-icon">🏷️</div>
+            <div className="stat-icon">
+              <Tag size={24} strokeWidth={1.5} />
+            </div>
             <div className="stat-content">
               <div className="stat-value">{estadisticas.productos_unicos}</div>
               <div className="stat-label">Productos</div>

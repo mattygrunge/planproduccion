@@ -196,8 +196,16 @@
 }
 
 .sector-header .sector-name {
-  width: 185px;
-  min-width: 185px;
+  width: 200px;
+  min-width: 200px;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.sector-header .sector-icon {
+  color: var(--color-primary);
+  flex-shrink: 0;
 }
 
 /* Line Rows */
@@ -225,6 +233,7 @@
   position: sticky;
   left: 0;
   z-index: 5;
+  box-shadow: 2px 0 4px rgba(0, 0, 0, 0.05);
 }
 
 .linea-timeline {
@@ -331,6 +340,13 @@
 .estado-block .estado-hora {
   font-size: 10px;
   opacity: 0.9;
+}
+
+.estado-block .estado-obs {
+  font-size: 9px;
+  opacity: 0.8;
+  font-style: italic;
+  margin-top: 1px;
 }
 
 /* Estado Colors - Using theme palette */

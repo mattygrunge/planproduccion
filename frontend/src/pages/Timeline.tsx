@@ -6,6 +6,7 @@ import {
   RefreshCw,
   ClipboardList,
   AlertTriangle,
+  Folder,
 } from "lucide-react";
 import {
   estadosLineaApi,
@@ -332,7 +333,10 @@ function Timeline() {
                 <div key={sector.id} className="sector-group">
                   {/* Sector Header */}
                   <div className="sector-header">
-                    <span className="sector-name">📁 {sector.nombre}</span>
+                    <span className="sector-name">
+                      <Folder size={16} strokeWidth={1.5} className="sector-icon" />
+                      {sector.nombre}
+                    </span>
                   </div>
 
                   {/* Lines */}
@@ -383,9 +387,17 @@ function Timeline() {
                                     ? estado.tipo_estado_label
                                     : estado.tipo_estado_label?.substring(0, 3)}
                                 </span>
-                                {width > 80 && (
+                                {width > 100 && (
                                   <span className="estado-hora">
                                     {formatTime(estado.fecha_hora_inicio)}
+                                    {estado.duracion_minutos && ` · ${Math.floor(estado.duracion_minutos / 60)}h ${estado.duracion_minutos % 60}m`}
+                                  </span>
+                                )}
+                                {width > 150 && estado.observaciones && (
+                                  <span className="estado-obs">
+                                    {estado.observaciones.length > 25 
+                                      ? estado.observaciones.substring(0, 25) + "..." 
+                                      : estado.observaciones}
                                   </span>
                                 )}
                               </div>

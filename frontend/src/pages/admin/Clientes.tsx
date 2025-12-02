@@ -23,7 +23,6 @@ const Clientes = () => {
   const [showModal, setShowModal] = useState(false);
   const [editingItem, setEditingItem] = useState<Cliente | null>(null);
   const [formData, setFormData] = useState<ClienteCreate>({
-    codigo: "",
     nombre: "",
     razon_social: "",
     cuit: "",
@@ -72,7 +71,6 @@ const Clientes = () => {
   const openCreateModal = () => {
     setEditingItem(null);
     setFormData({
-      codigo: "",
       nombre: "",
       razon_social: "",
       cuit: "",
@@ -88,7 +86,6 @@ const Clientes = () => {
   const openEditModal = (item: Cliente) => {
     setEditingItem(item);
     setFormData({
-      codigo: item.codigo,
       nombre: item.nombre,
       razon_social: item.razon_social || "",
       cuit: item.cuit || "",
@@ -113,7 +110,6 @@ const Clientes = () => {
     try {
       if (editingItem) {
         const updateData: ClienteUpdate = {
-          codigo: formData.codigo,
           nombre: formData.nombre,
           razon_social: formData.razon_social || undefined,
           cuit: formData.cuit || undefined,
@@ -274,19 +270,6 @@ const Clientes = () => {
             </div>
             <form onSubmit={handleSubmit}>
               <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="codigo">Código *</label>
-                  <input
-                    type="text"
-                    id="codigo"
-                    value={formData.codigo}
-                    onChange={(e) =>
-                      setFormData({ ...formData, codigo: e.target.value })
-                    }
-                    required
-                    maxLength={50}
-                  />
-                </div>
                 <div className="form-group">
                   <label htmlFor="cuit">CUIT</label>
                   <input
