@@ -342,50 +342,47 @@ const Productos = () => {
               </div>
             </div>
           ) : (
-            productosAgrupados.map((grupo) => (
-              <div key={grupo.cliente.id} className="table-container" style={{ marginBottom: "1rem" }}>
-                {/* Header del grupo - Cliente */}
-                <div
-                  className="cliente-group-header"
-                  onClick={() => toggleCliente(grupo.cliente.id)}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "0.5rem",
-                    padding: "0.75rem 1rem",
-                    background: "linear-gradient(135deg, var(--color-primary), var(--color-primary-hover))",
-                    color: "var(--color-white)",
-                    cursor: "pointer",
-                    fontWeight: 600,
-                    borderRadius: "var(--border-radius-md) var(--border-radius-md) 0 0",
-                  }}
-                >
-                  {collapsedClientes.has(grupo.cliente.id) ? (
-                    <ChevronRight size={18} />
-                  ) : (
-                    <ChevronDown size={18} />
-                  )}
-                  <span>{grupo.cliente.nombre}</span>
-                  <span style={{ opacity: 0.8, fontSize: "0.85em", marginLeft: "auto" }}>
-                    {grupo.productos.length} producto{grupo.productos.length !== 1 ? "s" : ""}
-                  </span>
-                </div>
-                
-                {/* Tabla de productos del cliente */}
-                {!collapsedClientes.has(grupo.cliente.id) && (
-                  <table className="data-table" style={{ borderTopLeftRadius: 0, borderTopRightRadius: 0 }}>
-                    <thead>
-                      <tr>
-                        <th>Código</th>
-                        <th>Nombre</th>
-                        <th>Tipo</th>
-                        <th>Formato Lote</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
+            <div className="table-container">
+              <table className="data-table">
+                <thead>
+                  <tr>
+                    <th style={{ width: "120px" }}>Código</th>
+                    <th style={{ width: "220px" }}>Nombre</th>
+                    <th style={{ width: "150px" }}>Tipo</th>
+                    <th style={{ width: "120px" }}>Formato Lote</th>
+                    <th style={{ width: "90px" }}>Estado</th>
+                    <th style={{ width: "180px" }}>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {productosAgrupados.map((grupo) => (
+                    <>
+                      {/* Header de cliente */}
+                      <tr
+                        key={`cliente-${grupo.cliente.id}`}
+                        className="cliente-header-row"
+                        onClick={() => toggleCliente(grupo.cliente.id)}
+                        style={{
+                          background: "var(--color-background-dark)",
+                          cursor: "pointer",
+                        }}
+                      >
+                        <td colSpan={6} style={{ padding: "0.6rem 1rem" }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", fontWeight: 600, color: "var(--color-text)" }}>
+                            {collapsedClientes.has(grupo.cliente.id) ? (
+                              <ChevronRight size={16} />
+                            ) : (
+                              <ChevronDown size={16} />
+                            )}
+                            <span>{grupo.cliente.nombre}</span>
+                            <span style={{ opacity: 0.6, fontSize: "0.85em", marginLeft: "auto", fontWeight: 400 }}>
+                              {grupo.productos.length} producto{grupo.productos.length !== 1 ? "s" : ""}
+                            </span>
+                          </div>
+                        </td>
                       </tr>
-                    </thead>
-                    <tbody>
-                      {grupo.productos.map((item) => (
+                      {/* Productos del cliente */}
+                      {!collapsedClientes.has(grupo.cliente.id) && grupo.productos.map((item) => (
                         <tr key={item.id}>
                           <td><strong>{item.codigo}</strong></td>
                           <td>{item.nombre}</td>
@@ -406,11 +403,11 @@ const Productos = () => {
                           </td>
                         </tr>
                       ))}
-                    </tbody>
-                  </table>
-                )}
-              </div>
-            ))
+                    </>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
 
           {pagination.pages > 1 && (

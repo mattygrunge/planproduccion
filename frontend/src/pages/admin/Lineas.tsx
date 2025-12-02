@@ -261,81 +261,70 @@ const Lineas = () => {
               </div>
             </div>
           ) : (
-            lineasAgrupadas.map((grupo) => (
-              <div key={grupo.sector.id} className="table-container" style={{ marginBottom: "1rem" }}>
-                {/* Header del grupo - Sector */}
-                <div
-                  className="sector-group-header"
-                  onClick={() => toggleSector(grupo.sector.id)}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "0.5rem",
-                    padding: "0.75rem 1rem",
-                    background: "linear-gradient(135deg, var(--color-accent), var(--color-accent-hover))",
-                    color: "var(--color-white)",
-                    cursor: "pointer",
-                    fontWeight: 600,
-                    borderRadius: "var(--border-radius-md) var(--border-radius-md) 0 0",
-                  }}
-                >
-                  {collapsedSectors.has(grupo.sector.id) ? (
-                    <ChevronRight size={18} />
-                  ) : (
-                    <ChevronDown size={18} />
-                  )}
-                  <span>{grupo.sector.nombre}</span>
-                  <span style={{ opacity: 0.8, fontSize: "0.85em", marginLeft: "auto" }}>
-                    {grupo.lineas.length} línea{grupo.lineas.length !== 1 ? "s" : ""}
-                  </span>
-                </div>
-                
-                {/* Tabla de líneas del sector */}
-                {!collapsedSectors.has(grupo.sector.id) && (
-                  <table className="data-table" style={{ borderTopLeftRadius: 0, borderTopRightRadius: 0 }}>
-                    <thead>
-                      <tr>
-                        <th>Código</th>
-                        <th>Nombre</th>
-                        <th>Descripción</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
+            <div className="table-container">
+              <table className="data-table">
+                <thead>
+                  <tr>
+                    <th style={{ width: "140px" }}>Código</th>
+                    <th style={{ width: "200px" }}>Nombre</th>
+                    <th>Descripción</th>
+                    <th style={{ width: "100px" }}>Estado</th>
+                    <th style={{ width: "180px" }}>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {lineasAgrupadas.map((grupo) => (
+                    <>
+                      {/* Header de sector */}
+                      <tr
+                        key={`sector-${grupo.sector.id}`}
+                        className="sector-header-row"
+                        onClick={() => toggleSector(grupo.sector.id)}
+                        style={{
+                          background: "var(--color-background-dark)",
+                          cursor: "pointer",
+                        }}
+                      >
+                        <td colSpan={5} style={{ padding: "0.6rem 1rem" }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", fontWeight: 600, color: "var(--color-text)" }}>
+                            {collapsedSectors.has(grupo.sector.id) ? (
+                              <ChevronRight size={16} />
+                            ) : (
+                              <ChevronDown size={16} />
+                            )}
+                            <span>{grupo.sector.nombre}</span>
+                            <span style={{ opacity: 0.6, fontSize: "0.85em", marginLeft: "auto", fontWeight: 400 }}>
+                              {grupo.lineas.length} línea{grupo.lineas.length !== 1 ? "s" : ""}
+                            </span>
+                          </div>
+                        </td>
                       </tr>
-                    </thead>
-                    <tbody>
-                      {grupo.lineas.map((item) => (
+                      {/* Líneas del sector */}
+                      {!collapsedSectors.has(grupo.sector.id) && grupo.lineas.map((item) => (
                         <tr key={item.id}>
                           <td><strong>{(item as unknown as { codigo?: string }).codigo || `#${item.id}`}</strong></td>
                           <td>{item.nombre}</td>
                           <td>{item.descripcion || "-"}</td>
                           <td>
-                            <span
-                              className={`badge ${item.activo ? "badge-success" : "badge-danger"}`}
-                            >
+                            <span className={`badge ${item.activo ? "badge-success" : "badge-danger"}`}>
                               {item.activo ? "Activo" : "Inactivo"}
                             </span>
                           </td>
                           <td className="actions-cell">
-                            <button
-                              className="btn btn-sm btn-secondary"
-                              onClick={() => openEditModal(item)}
-                            >
+                            <button className="btn btn-sm btn-secondary" onClick={() => openEditModal(item)}>
                               Editar
                             </button>
-                            <button
-                              className="btn btn-sm btn-danger"
-                              onClick={() => setDeleteConfirm(item.id)}
-                            >
+                            <button className="btn btn-sm btn-danger" onClick={() => setDeleteConfirm(item.id)}>
                               Eliminar
                             </button>
                           </td>
                         </tr>
                       ))}
-                    </tbody>
-                  </table>
-                )}
-              </div>
-            ))
+                    </>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
 
           {pagination.pages > 1 && (
