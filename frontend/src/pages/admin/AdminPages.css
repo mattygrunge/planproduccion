@@ -132,9 +132,9 @@
 }
 
 .data-table th {
-  background: var(--color-background-dark);
+  background: var(--color-primary);
   font-weight: 600;
-  color: var(--color-text);
+  color: var(--color-white);
   font-size: var(--font-size-sm);
   text-transform: uppercase;
 }
