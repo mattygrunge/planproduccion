@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { Link } from "lucide-react";
+import { useState, useEffect, useMemo } from "react";
+import { Link, ChevronDown, ChevronRight } from "lucide-react";
 import { lineasApi, sectoresApi } from "../../api/api";
 import type {
   Linea,
@@ -10,6 +10,11 @@ import type {
 } from "../../api/api";
 import "./AdminPages.css";
 
+interface LineasPorSector {
+  sector: Sector;
+  lineas: Linea[];
+}
+
 const Lineas = () => {
   const [lineas, setLineas] = useState<Linea[]>([]);
   const [sectores, setSectores] = useState<Sector[]>([]);
@@ -17,7 +22,7 @@ const Lineas = () => {
   const [error, setError] = useState<string | null>(null);
   const [pagination, setPagination] = useState({
     page: 1,
-    size: 10,
+    size: 100, // Aumentamos para traer todas las líneas
     total: 0,
     pages: 0,
   });
@@ -34,6 +39,9 @@ const Lineas = () => {
   const [saving, setSaving] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState<number | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
+  
+  // Estados para sectores colapsados
+  const [collapsedSectors, setCollapsedSectors] = useState<Set<number>>(new Set());
 
   const fetchSectores = async () => {
     try {
@@ -75,6 +83,55 @@ const Lineas = () => {
   useEffect(() => {
     fetchData();
   }, [pagination.page, search, filterSector]);
+
+  // Agrupar líneas por sector
+  const lineasAgrupadas = useMemo((): LineasPorSector[] => {
+    const grupos: Map<number, Linea[]> = new Map();
+    
+    // Agrupar líneas por sector_id
+    lineas.forEach((linea) => {
+      const sectorId = linea.sector_id;
+      if (!grupos.has(sectorId)) {
+        grupos.set(sectorId, []);
+      }
+      grupos.get(sectorId)!.push(linea);
+    });
+    
+    // Convertir a array ordenado por nombre del sector
+    const resultado: LineasPorSector[] = [];
+    sectores.forEach((sector) => {
+      const lineasDelSector = grupos.get(sector.id);
+      if (lineasDelSector && lineasDelSector.length > 0) {
+        resultado.push({
+          sector,
+          lineas: lineasDelSector.sort((a, b) => a.nombre.localeCompare(b.nombre)),
+        });
+      }
+    });
+    
+    // Agregar líneas sin sector asignado (si las hay)
+    const lineasSinSector = lineas.filter(l => !sectores.find(s => s.id === l.sector_id));
+    if (lineasSinSector.length > 0) {
+      resultado.push({
+        sector: { id: 0, nombre: "Sin Sector", descripcion: "", activo: true, codigo: "", created_at: "", updated_at: "" } as Sector,
+        lineas: lineasSinSector,
+      });
+    }
+    
+    return resultado;
+  }, [lineas, sectores]);
+
+  const toggleSector = (sectorId: number) => {
+    setCollapsedSectors(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(sectorId)) {
+        newSet.delete(sectorId);
+      } else {
+        newSet.add(sectorId);
+      }
+      return newSet;
+    });
+  };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -197,59 +254,89 @@ const Lineas = () => {
         <div className="loading">Cargando...</div>
       ) : (
         <>
-          <div className="table-container">
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Nombre</th>
-                  <th>Sector</th>
-                  <th>Descripción</th>
-                  <th>Estado</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                {lineas.length === 0 ? (
-                  <tr>
-                    <td colSpan={6} className="empty-row">
-                      No hay líneas registradas
-                    </td>
-                  </tr>
-                ) : (
-                  lineas.map((item) => (
-                    <tr key={item.id}>
-                      <td>{item.id}</td>
-                      <td>{item.nombre}</td>
-                      <td>{item.sector?.nombre || "-"}</td>
-                      <td>{item.descripcion || "-"}</td>
-                      <td>
-                        <span
-                          className={`badge ${item.activo ? "badge-success" : "badge-danger"}`}
-                        >
-                          {item.activo ? "Activo" : "Inactivo"}
-                        </span>
-                      </td>
-                      <td className="actions-cell">
-                        <button
-                          className="btn btn-sm btn-edit"
-                          onClick={() => openEditModal(item)}
-                        >
-                          Editar
-                        </button>
-                        <button
-                          className="btn btn-sm btn-danger"
-                          onClick={() => setDeleteConfirm(item.id)}
-                        >
-                          Eliminar
-                        </button>
-                      </td>
-                    </tr>
-                  ))
+          {lineasAgrupadas.length === 0 ? (
+            <div className="table-container">
+              <div className="empty-row" style={{ padding: "2rem", textAlign: "center" }}>
+                No hay líneas registradas
+              </div>
+            </div>
+          ) : (
+            lineasAgrupadas.map((grupo) => (
+              <div key={grupo.sector.id} className="table-container" style={{ marginBottom: "1rem" }}>
+                {/* Header del grupo - Sector */}
+                <div
+                  className="sector-group-header"
+                  onClick={() => toggleSector(grupo.sector.id)}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.5rem",
+                    padding: "0.75rem 1rem",
+                    background: "linear-gradient(135deg, var(--color-accent), var(--color-accent-hover))",
+                    color: "var(--color-white)",
+                    cursor: "pointer",
+                    fontWeight: 600,
+                    borderRadius: "var(--border-radius-md) var(--border-radius-md) 0 0",
+                  }}
+                >
+                  {collapsedSectors.has(grupo.sector.id) ? (
+                    <ChevronRight size={18} />
+                  ) : (
+                    <ChevronDown size={18} />
+                  )}
+                  <span>{grupo.sector.nombre}</span>
+                  <span style={{ opacity: 0.8, fontSize: "0.85em", marginLeft: "auto" }}>
+                    {grupo.lineas.length} línea{grupo.lineas.length !== 1 ? "s" : ""}
+                  </span>
+                </div>
+                
+                {/* Tabla de líneas del sector */}
+                {!collapsedSectors.has(grupo.sector.id) && (
+                  <table className="data-table" style={{ borderTopLeftRadius: 0, borderTopRightRadius: 0 }}>
+                    <thead>
+                      <tr>
+                        <th>Código</th>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {grupo.lineas.map((item) => (
+                        <tr key={item.id}>
+                          <td><strong>{(item as unknown as { codigo?: string }).codigo || `#${item.id}`}</strong></td>
+                          <td>{item.nombre}</td>
+                          <td>{item.descripcion || "-"}</td>
+                          <td>
+                            <span
+                              className={`badge ${item.activo ? "badge-success" : "badge-danger"}`}
+                            >
+                              {item.activo ? "Activo" : "Inactivo"}
+                            </span>
+                          </td>
+                          <td className="actions-cell">
+                            <button
+                              className="btn btn-sm btn-secondary"
+                              onClick={() => openEditModal(item)}
+                            >
+                              Editar
+                            </button>
+                            <button
+                              className="btn btn-sm btn-danger"
+                              onClick={() => setDeleteConfirm(item.id)}
+                            >
+                              Eliminar
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 )}
-              </tbody>
-            </table>
-          </div>
+              </div>
+            ))
+          )}
 
           {pagination.pages > 1 && (
             <div className="pagination">
@@ -346,7 +433,7 @@ const Lineas = () => {
               <div className="modal-footer">
                 <button
                   type="button"
-                  className="btn btn-secondary"
+                  className="btn btn-outline"
                   onClick={closeModal}
                 >
                   Cancelar
@@ -382,7 +469,7 @@ const Lineas = () => {
             </div>
             <div className="modal-footer">
               <button
-                className="btn btn-secondary"
+                className="btn btn-outline"
                 onClick={() => { setDeleteConfirm(null); setDeleteError(null); }}
               >
                 Cancelar

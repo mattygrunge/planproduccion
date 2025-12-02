@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { Package } from "lucide-react";
+import { useState, useEffect, useMemo } from "react";
+import { Package, ChevronDown, ChevronRight } from "lucide-react";
 import { productosApi, clientesApi } from "../../api/api";
 import type {
   Producto,
@@ -21,6 +21,11 @@ const COLORES_BANDA = [
   "Negra",
 ];
 
+interface ProductosPorCliente {
+  cliente: { id: number; nombre: string };
+  productos: Producto[];
+}
+
 const Productos = () => {
   const [productos, setProductos] = useState<Producto[]>([]);
   const [clientes, setClientes] = useState<Cliente[]>([]);
@@ -28,11 +33,12 @@ const Productos = () => {
   const [error, setError] = useState<string | null>(null);
   const [pagination, setPagination] = useState({
     page: 1,
-    size: 10,
+    size: 100, // Aumentamos para traer todos los productos
     total: 0,
     pages: 0,
   });
   const [search, setSearch] = useState("");
+  const [filterCliente, setFilterCliente] = useState<number | "">("");
   const [showModal, setShowModal] = useState(false);
   const [editingItem, setEditingItem] = useState<Producto | null>(null);
   const [formData, setFormData] = useState<ProductoCreate>({
@@ -68,6 +74,9 @@ const Productos = () => {
   const [saving, setSaving] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState<number | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
+  
+  // Estados para clientes colapsados
+  const [collapsedClientes, setCollapsedClientes] = useState<Set<number>>(new Set());
 
   const fetchData = async () => {
     try {
@@ -102,9 +111,63 @@ const Productos = () => {
   };
 
   useEffect(() => {
-    fetchData();
     fetchClientes();
-  }, [pagination.page, search]);
+  }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [pagination.page, search, filterCliente]);
+
+  // Agrupar productos por cliente
+  const productosAgrupados = useMemo((): ProductosPorCliente[] => {
+    const grupos: Map<number, Producto[]> = new Map();
+    
+    // Agrupar productos por cliente_id
+    productos.forEach((producto) => {
+      const clienteId = producto.cliente_id || 0; // 0 para "Sin cliente"
+      if (!grupos.has(clienteId)) {
+        grupos.set(clienteId, []);
+      }
+      grupos.get(clienteId)!.push(producto);
+    });
+    
+    // Convertir a array ordenado por nombre del cliente
+    const resultado: ProductosPorCliente[] = [];
+    
+    // Primero agregar productos con cliente asignado
+    clientes.forEach((cliente) => {
+      const productosDelCliente = grupos.get(cliente.id);
+      if (productosDelCliente && productosDelCliente.length > 0) {
+        resultado.push({
+          cliente: { id: cliente.id, nombre: cliente.nombre },
+          productos: productosDelCliente.sort((a, b) => a.nombre.localeCompare(b.nombre)),
+        });
+      }
+    });
+    
+    // Agregar productos sin cliente asignado
+    const productosSinCliente = grupos.get(0);
+    if (productosSinCliente && productosSinCliente.length > 0) {
+      resultado.push({
+        cliente: { id: 0, nombre: "Sin Cliente Asignado" },
+        productos: productosSinCliente.sort((a, b) => a.nombre.localeCompare(b.nombre)),
+      });
+    }
+    
+    return resultado;
+  }, [productos, clientes]);
+
+  const toggleCliente = (clienteId: number) => {
+    setCollapsedClientes(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(clienteId)) {
+        newSet.delete(clienteId);
+      } else {
+        newSet.add(clienteId);
+      }
+      return newSet;
+    });
+  };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -249,10 +312,21 @@ const Productos = () => {
         <form onSubmit={handleSearch} className="search-form">
           <input
             type="text"
-            placeholder="Buscar por código, nombre, código producto..."
+            placeholder="Buscar por código, nombre..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
+          <select
+            value={filterCliente}
+            onChange={(e) => setFilterCliente(e.target.value ? Number(e.target.value) : "")}
+          >
+            <option value="">Todos los clientes</option>
+            {clientes.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.nombre}
+              </option>
+            ))}
+          </select>
           <button type="submit">Buscar</button>
         </form>
       </div>
@@ -261,53 +335,83 @@ const Productos = () => {
         <div className="loading">Cargando...</div>
       ) : (
         <>
-          <div className="table-container">
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Nombre</th>
-                  <th>Cliente</th>
-                  <th>Tipo</th>
-                  <th>Formato Lote</th>
-                  <th>Estado</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                {productos.length === 0 ? (
-                  <tr>
-                    <td colSpan={7} className="empty-row">
-                      No hay productos registrados
-                    </td>
-                  </tr>
-                ) : (
-                  productos.map((item) => (
-                    <tr key={item.id}>
-                      <td><strong>{item.codigo}</strong></td>
-                      <td>{item.nombre}</td>
-                      <td>{item.cliente?.nombre || "-"}</td>
-                      <td>{item.tipo_producto || "-"}</td>
-                      <td>{item.formato_lote || "-"}</td>
-                      <td>
-                        <span className={`badge ${item.activo ? "badge-success" : "badge-danger"}`}>
-                          {item.activo ? "Activo" : "Inactivo"}
-                        </span>
-                      </td>
-                      <td className="actions-cell">
-                        <button className="btn btn-sm btn-edit" onClick={() => openEditModal(item)}>
-                          Editar
-                        </button>
-                        <button className="btn btn-sm btn-danger" onClick={() => setDeleteConfirm(item.id)}>
-                          Eliminar
-                        </button>
-                      </td>
-                    </tr>
-                  ))
+          {productosAgrupados.length === 0 ? (
+            <div className="table-container">
+              <div className="empty-row" style={{ padding: "2rem", textAlign: "center" }}>
+                No hay productos registrados
+              </div>
+            </div>
+          ) : (
+            productosAgrupados.map((grupo) => (
+              <div key={grupo.cliente.id} className="table-container" style={{ marginBottom: "1rem" }}>
+                {/* Header del grupo - Cliente */}
+                <div
+                  className="cliente-group-header"
+                  onClick={() => toggleCliente(grupo.cliente.id)}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.5rem",
+                    padding: "0.75rem 1rem",
+                    background: "linear-gradient(135deg, var(--color-primary), var(--color-primary-hover))",
+                    color: "var(--color-white)",
+                    cursor: "pointer",
+                    fontWeight: 600,
+                    borderRadius: "var(--border-radius-md) var(--border-radius-md) 0 0",
+                  }}
+                >
+                  {collapsedClientes.has(grupo.cliente.id) ? (
+                    <ChevronRight size={18} />
+                  ) : (
+                    <ChevronDown size={18} />
+                  )}
+                  <span>{grupo.cliente.nombre}</span>
+                  <span style={{ opacity: 0.8, fontSize: "0.85em", marginLeft: "auto" }}>
+                    {grupo.productos.length} producto{grupo.productos.length !== 1 ? "s" : ""}
+                  </span>
+                </div>
+                
+                {/* Tabla de productos del cliente */}
+                {!collapsedClientes.has(grupo.cliente.id) && (
+                  <table className="data-table" style={{ borderTopLeftRadius: 0, borderTopRightRadius: 0 }}>
+                    <thead>
+                      <tr>
+                        <th>Código</th>
+                        <th>Nombre</th>
+                        <th>Tipo</th>
+                        <th>Formato Lote</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {grupo.productos.map((item) => (
+                        <tr key={item.id}>
+                          <td><strong>{item.codigo}</strong></td>
+                          <td>{item.nombre}</td>
+                          <td>{item.tipo_producto || "-"}</td>
+                          <td>{item.formato_lote || "-"}</td>
+                          <td>
+                            <span className={`badge ${item.activo ? "badge-success" : "badge-danger"}`}>
+                              {item.activo ? "Activo" : "Inactivo"}
+                            </span>
+                          </td>
+                          <td className="actions-cell">
+                            <button className="btn btn-sm btn-secondary" onClick={() => openEditModal(item)}>
+                              Editar
+                            </button>
+                            <button className="btn btn-sm btn-danger" onClick={() => setDeleteConfirm(item.id)}>
+                              Eliminar
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 )}
-              </tbody>
-            </table>
-          </div>
+              </div>
+            ))
+          )}
 
           {pagination.pages > 1 && (
             <div className="pagination">
@@ -507,7 +611,7 @@ const Productos = () => {
                 </div>
               </div>
               <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" onClick={closeModal}>Cancelar</button>
+                <button type="button" className="btn btn-outline" onClick={closeModal}>Cancelar</button>
                 <button type="submit" className="btn btn-primary" disabled={saving}>{saving ? "Guardando..." : "Guardar"}</button>
               </div>
             </form>
@@ -532,7 +636,7 @@ const Productos = () => {
               {!deleteError && <p className="text-muted">Esta acción no se puede deshacer.</p>}
             </div>
             <div className="modal-footer">
-              <button className="btn btn-secondary" onClick={() => { setDeleteConfirm(null); setDeleteError(null); }}>Cancelar</button>
+              <button className="btn btn-outline" onClick={() => { setDeleteConfirm(null); setDeleteError(null); }}>Cancelar</button>
               {!deleteError && (
                 <button className="btn btn-danger" onClick={() => handleDelete(deleteConfirm)}>Eliminar</button>
               )}

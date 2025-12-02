@@ -11,10 +11,10 @@ from sqlalchemy import func
 class TipoCodigo:
     """Prefijos para cada tipo de entidad."""
     PRODUCTO = "PD"
-    SECTOR = "SC"
-    LINEA = "LN"
+    SECTOR = "SC"        # SC250001 (Sector)
+    LINEA = "SN"         # SN250001 (liNea de Sector)
     CLIENTE = "CL"
-    ESTADO_LINEA = "EL"
+    ESTADO_LINEA = "LS"  # LS250001 (Line State / Estado de Línea)
     LOTE = "LT"
     USUARIO = "US"
     ROL = "RL"
@@ -93,7 +93,7 @@ def generar_codigo_sector(db: Session) -> str:
 
 
 def generar_codigo_linea(db: Session) -> str:
-    """Genera código para Línea (LN + año + secuencia)."""
+    """Genera código para Línea (SN + año + secuencia)."""
     from app.models.linea import Linea
     return generar_codigo(db, Linea, TipoCodigo.LINEA, "codigo")
 
@@ -105,7 +105,7 @@ def generar_codigo_cliente(db: Session) -> str:
 
 
 def generar_codigo_estado_linea(db: Session) -> str:
-    """Genera código para Estado de Línea (EL + año + secuencia)."""
+    """Genera código para Estado de Línea (LS + año + secuencia)."""
     from app.models.estado_linea import EstadoLinea
     return generar_codigo(db, EstadoLinea, TipoCodigo.ESTADO_LINEA, "codigo")
 
