@@ -14,6 +14,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspa
 
 from app.core.database import engine, SessionLocal, Base
 from app.core.security import get_password_hash
+from app.core.id_generator import generar_codigo_usuario, generar_codigo_rol
 from app.models.user import User, Role
 from app.models.sector import Sector
 from app.models.linea import Linea
@@ -43,9 +44,12 @@ def init_database():
         for role_data in roles_data:
             existing_role = db.query(Role).filter(Role.name == role_data["name"]).first()
             if not existing_role:
-                role = Role(**role_data)
+                # Generar código automático para el rol
+                codigo = generar_codigo_rol(db)
+                role = Role(codigo=codigo, **role_data)
                 db.add(role)
-                print(f"  ✅ Rol '{role_data['name']}' creado.")
+                db.commit()  # Commit after each role to get the next code correctly
+                print(f"  ✅ Rol '{role_data['name']}' creado con código {codigo}.")
             else:
                 print(f"  ⏭️  Rol '{role_data['name']}' ya existe.")
         
@@ -58,7 +62,10 @@ def init_database():
         existing_admin = db.query(User).filter(User.username == "admin").first()
         
         if not existing_admin:
+            # Generar código automático para el usuario
+            codigo = generar_codigo_usuario(db)
             admin_user = User(
+                codigo=codigo,
                 email="admin@planproduccion.local",
                 username="admin",
                 hashed_password=get_password_hash("admin123"),
@@ -68,7 +75,7 @@ def init_database():
             )
             db.add(admin_user)
             db.commit()
-            print("  ✅ Usuario admin creado.")
+            print(f"  ✅ Usuario admin creado con código {codigo}.")
             print("\n" + "="*50)
             print("  📋 CREDENCIALES DEL ADMIN:")
             print("     Usuario: admin")

@@ -72,6 +72,7 @@ class ProductoSimple(BaseModel):
 class EstadoLineaSimple(BaseModel):
     """Schema simplificado de EstadoLinea para respuestas de Lote."""
     id: int
+    codigo: str
     tipo_estado: str
     fecha_hora_inicio: Optional[datetime] = None
 
@@ -82,6 +83,7 @@ class EstadoLineaSimple(BaseModel):
 class LoteResponse(LoteBase):
     """Schema de respuesta para un lote."""
     id: int
+    codigo: str
     usuario_id: Optional[int] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None

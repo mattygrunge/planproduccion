@@ -4,7 +4,6 @@ from datetime import datetime
 
 
 class ClienteBase(BaseModel):
-    codigo: str = Field(..., min_length=1, max_length=50)
     nombre: str = Field(..., min_length=1, max_length=200)
     razon_social: Optional[str] = Field(None, max_length=200)
     cuit: Optional[str] = Field(None, max_length=20)
@@ -16,11 +15,11 @@ class ClienteBase(BaseModel):
 
 
 class ClienteCreate(ClienteBase):
+    """Schema para crear cliente - el código se genera automáticamente."""
     pass
 
 
 class ClienteUpdate(BaseModel):
-    codigo: Optional[str] = Field(None, min_length=1, max_length=50)
     nombre: Optional[str] = Field(None, min_length=1, max_length=200)
     razon_social: Optional[str] = Field(None, max_length=200)
     cuit: Optional[str] = Field(None, max_length=20)
@@ -33,6 +32,7 @@ class ClienteUpdate(BaseModel):
 
 class ClienteResponse(ClienteBase):
     id: int
+    codigo: str
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 

@@ -13,6 +13,7 @@ class RoleCreate(RoleBase):
 
 class RoleResponse(RoleBase):
     id: int
+    codigo: str
 
     class Config:
         from_attributes = True

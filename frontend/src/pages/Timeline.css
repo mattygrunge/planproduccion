@@ -454,6 +454,12 @@
   margin-bottom: var(--spacing-md);
 }
 
+.timeline-empty-icon-svg {
+  color: var(--color-accent);
+  margin-bottom: var(--spacing-md);
+  stroke-width: 1.5;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .timeline-header {

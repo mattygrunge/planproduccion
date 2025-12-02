@@ -20,6 +20,7 @@ import re
 from app.core.database import get_db
 from app.core.deps import get_current_user
 from app.core.audit import audit_crear, audit_editar, audit_eliminar, get_client_info, _model_to_dict
+from app.core.id_generator import generar_codigo_lote
 from app.models import Lote, Producto, EstadoLinea, User, TipoEstado
 from app.schemas.lote import (
     LoteCreate,
@@ -324,8 +325,12 @@ def create_lote(
             producto.anos_vencimiento or 2
         )
     
+    # Generar código automático
+    codigo = generar_codigo_lote(db)
+    
     # Crear el lote
     db_lote = Lote(
+        codigo=codigo,
         numero_lote=lote.numero_lote,
         producto_id=lote.producto_id,
         estado_linea_id=lote.estado_linea_id,

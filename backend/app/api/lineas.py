@@ -6,9 +6,11 @@ import math
 
 from app.core.database import get_db
 from app.core.deps import get_current_user, get_current_active_admin
+from app.core.id_generator import generar_codigo_linea
 from app.models.user import User
 from app.models.linea import Linea
 from app.models.sector import Sector
+from app.models.estado_linea import EstadoLinea
 from app.schemas.linea import LineaCreate, LineaUpdate, LineaResponse, LineaList
 
 router = APIRouter(prefix="/lineas", tags=["Líneas"])
@@ -83,7 +85,10 @@ def crear_linea(
             detail="El sector especificado no existe"
         )
     
-    linea = Linea(**linea_data.model_dump())
+    # Generar código automático
+    codigo = generar_codigo_linea(db)
+    
+    linea = Linea(codigo=codigo, **linea_data.model_dump())
     db.add(linea)
     
     try:
@@ -155,6 +160,14 @@ def eliminar_linea(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Línea no encontrada"
+        )
+    
+    # Verificar si tiene estados de línea asociados
+    estados_count = db.query(EstadoLinea).filter(EstadoLinea.linea_id == linea_id).count()
+    if estados_count > 0:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"No se puede eliminar la línea porque tiene {estados_count} estado(s) de línea asociado(s). Elimine primero los estados de línea relacionados."
         )
     
     db.delete(linea)

@@ -6,6 +6,7 @@ import math
 
 from app.core.database import get_db
 from app.core.deps import get_current_user, get_current_active_admin
+from app.core.id_generator import generar_codigo_sector
 from app.models.user import User
 from app.models.sector import Sector
 from app.schemas.sector import SectorCreate, SectorUpdate, SectorResponse, SectorList
@@ -79,7 +80,10 @@ def crear_sector(
             detail="Ya existe un sector con ese nombre"
         )
     
-    sector = Sector(**sector_data.model_dump())
+    # Generar código automático
+    codigo = generar_codigo_sector(db)
+    
+    sector = Sector(codigo=codigo, **sector_data.model_dump())
     db.add(sector)
     
     try:

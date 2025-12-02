@@ -15,6 +15,8 @@ import {
   LogOut,
   ChevronLeft,
   ChevronRight,
+  User,
+  Settings,
 } from "lucide-react";
 import "./AdminLayout.css";
 
@@ -36,6 +38,7 @@ const AdminLayout = () => {
   ];
 
   const seguridadItems = [
+    { path: "/admin/usuarios", label: "Usuarios", icon: Users },
     { path: "/admin/auditoria", label: "Auditoría", icon: Shield },
   ];
 
@@ -153,10 +156,20 @@ const AdminLayout = () => {
 
         {/* Footer del Sidebar */}
         <div className="sidebar-footer">
-          <div className="user-info">
-            <span className="user-name">{user?.full_name || user?.username}</span>
-            <span className="user-role">{user?.role_name}</span>
-          </div>
+          <Link 
+            to="/account" 
+            className={`user-info-link ${location.pathname === "/account" ? "active" : ""}`}
+            title="Mi Cuenta"
+          >
+            <div className="user-avatar">
+              <User size={20} strokeWidth={1.5} />
+            </div>
+            <div className="user-info">
+              <span className="user-name">{user?.full_name || user?.username}</span>
+              <span className="user-role">{user?.role_name}</span>
+            </div>
+            <Settings size={16} strokeWidth={1.5} className="settings-icon" />
+          </Link>
           <button className="logout-btn" onClick={logout}>
             <LogOut size={18} strokeWidth={1.5} />
             <span>Cerrar Sesión</span>

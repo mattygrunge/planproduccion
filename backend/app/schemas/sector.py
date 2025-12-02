@@ -21,6 +21,7 @@ class SectorUpdate(BaseModel):
 
 class SectorResponse(SectorBase):
     id: int
+    codigo: str
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 

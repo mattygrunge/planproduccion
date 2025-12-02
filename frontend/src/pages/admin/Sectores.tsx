@@ -29,6 +29,7 @@ const Sectores = () => {
   });
   const [saving, setSaving] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState<number | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   const fetchData = async () => {
     try {
@@ -112,12 +113,20 @@ const Sectores = () => {
 
   const handleDelete = async (id: number) => {
     try {
+      setDeleteError(null);
       await sectoresApi.delete(id);
       setDeleteConfirm(null);
       fetchData();
     } catch (err: unknown) {
+      if (err && typeof err === "object" && "response" in err) {
+        const axiosError = err as { response?: { data?: { detail?: string } } };
+        if (axiosError.response?.data?.detail) {
+          setDeleteError(axiosError.response.data.detail);
+          return;
+        }
+      }
       const errorMessage = err instanceof Error ? err.message : "Error al eliminar";
-      setError(errorMessage);
+      setDeleteError(errorMessage);
     }
   };
 
@@ -309,21 +318,28 @@ const Sectores = () => {
             </div>
             <div className="modal-body">
               <p>¿Estás seguro de que deseas eliminar este sector?</p>
-              <p className="text-muted">Esta acción no se puede deshacer.</p>
+              {deleteError && (
+                <div className="alert alert-error" style={{ marginTop: "1rem" }}>
+                  {deleteError}
+                </div>
+              )}
+              {!deleteError && <p className="text-muted">Esta acción no se puede deshacer.</p>}
             </div>
             <div className="modal-footer">
               <button
                 className="btn btn-secondary"
-                onClick={() => setDeleteConfirm(null)}
+                onClick={() => { setDeleteConfirm(null); setDeleteError(null); }}
               >
                 Cancelar
               </button>
-              <button
-                className="btn btn-danger"
-                onClick={() => handleDelete(deleteConfirm)}
-              >
-                Eliminar
-              </button>
+              {!deleteError && (
+                <button
+                  className="btn btn-danger"
+                  onClick={() => handleDelete(deleteConfirm)}
+                >
+                  Eliminar
+                </button>
+              )}
             </div>
           </div>
         </div>

@@ -13,7 +13,9 @@ import Clientes from "./pages/admin/Clientes";
 import EstadosLinea from "./pages/admin/EstadosLinea";
 import Lotes from "./pages/admin/Lotes";
 import Auditoria from "./pages/admin/Auditoria";
+import Usuarios from "./pages/admin/Usuarios";
 import Historial from "./pages/Historial";
+import Account from "./pages/Account";
 import "./App.css";
 
 function App() {
@@ -33,6 +35,9 @@ function App() {
             <Route path="/timeline" element={<Timeline />} />
             <Route path="/historial" element={<Historial />} />
             
+            {/* Mi Cuenta - accesible para todos los usuarios autenticados */}
+            <Route path="/account" element={<Account />} />
+            
             {/* Rutas de administración (solo admin) - dentro del layout */}
             <Route path="/admin/sectores" element={<AdminRoute><Sectores /></AdminRoute>} />
             <Route path="/admin/lineas" element={<AdminRoute><Lineas /></AdminRoute>} />
@@ -41,6 +46,7 @@ function App() {
             <Route path="/admin/estados-linea" element={<AdminRoute><EstadosLinea /></AdminRoute>} />
             <Route path="/admin/lotes" element={<AdminRoute><Lotes /></AdminRoute>} />
             <Route path="/admin/auditoria" element={<AdminRoute><Auditoria /></AdminRoute>} />
+            <Route path="/admin/usuarios" element={<AdminRoute><Usuarios /></AdminRoute>} />
           </Route>
           
           {/* Redirigir raíz al dashboard */}

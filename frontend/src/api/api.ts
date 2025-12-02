@@ -59,6 +59,53 @@ export interface User {
   created_at: string;
 }
 
+export interface UserProfileUpdate {
+  username?: string;
+  email?: string;
+  full_name?: string;
+}
+
+export interface PasswordChange {
+  current_password: string;
+  new_password: string;
+  confirm_password: string;
+}
+
+export interface Role {
+  id: number;
+  name: string;
+  description: string | null;
+}
+
+export interface UserAdminCreate {
+  email: string;
+  username: string;
+  password: string;
+  full_name?: string;
+  role_id: number;
+  is_active?: boolean;
+}
+
+export interface UserAdminUpdate {
+  email?: string;
+  username?: string;
+  full_name?: string;
+  role_id?: number;
+  is_active?: boolean;
+}
+
+export interface UserResetPassword {
+  new_password: string;
+}
+
+export interface UsersListParams {
+  skip?: number;
+  limit?: number;
+  search?: string;
+  is_active?: boolean;
+  role_id?: number;
+}
+
 // Interfaces para Maestros
 export interface Sector {
   id: number;
@@ -106,11 +153,53 @@ export interface LineaUpdate {
   activo?: boolean;
 }
 
+export interface ClienteSimple {
+  id: number;
+  codigo: string;
+  nombre: string;
+}
+
 export interface Producto {
   id: number;
   codigo: string;
   nombre: string;
   descripcion: string | null;
+  // Formato de Lote (ej: AF01-25)
+  formato_lote: string | null;
+  // Cliente asociado
+  cliente_id: number | null;
+  cliente: ClienteSimple | null;
+  // Tipo de producto (ej: HERBICIDA GRUPO 4)
+  tipo_producto: string | null;
+  // Color de banda (ej: Amarilla)
+  color_banda: string | null;
+  // Código de producto externo (ej: 48387)
+  codigo_producto: string | null;
+  // Densidad
+  densidad: number | null;
+  // Envases - Bidón
+  bidon_proveedor: string | null;
+  bidon_descripcion: string | null;
+  // Envases - Tapa
+  tapa_proveedor: string | null;
+  tapa_descripcion: string | null;
+  // Envases - Pallet
+  pallet_proveedor: string | null;
+  pallet_descripcion: string | null;
+  // Envases - Cobertor
+  cobertor_proveedor: string | null;
+  cobertor_descripcion: string | null;
+  // Envases - Funda/Etiqueta
+  funda_etiqueta_proveedor: string | null;
+  funda_etiqueta_descripcion: string | null;
+  // Envases - Esquinero
+  esquinero_proveedor: string | null;
+  esquinero_descripcion: string | null;
+  // Palletizado
+  litros_por_pallet: number | null;
+  bidones_por_pallet: number | null;
+  bidones_por_piso: string | null;
+  // Campos heredados
   unidad_medida: string | null;
   precio_unitario: number | null;
   anos_vencimiento: number | null;
@@ -121,9 +210,29 @@ export interface Producto {
 }
 
 export interface ProductoCreate {
-  codigo: string;
   nombre: string;
   descripcion?: string;
+  formato_lote?: string;
+  cliente_id?: number;
+  tipo_producto?: string;
+  color_banda?: string;
+  codigo_producto?: string;
+  densidad?: number;
+  bidon_proveedor?: string;
+  bidon_descripcion?: string;
+  tapa_proveedor?: string;
+  tapa_descripcion?: string;
+  pallet_proveedor?: string;
+  pallet_descripcion?: string;
+  cobertor_proveedor?: string;
+  cobertor_descripcion?: string;
+  funda_etiqueta_proveedor?: string;
+  funda_etiqueta_descripcion?: string;
+  esquinero_proveedor?: string;
+  esquinero_descripcion?: string;
+  litros_por_pallet?: number;
+  bidones_por_pallet?: number;
+  bidones_por_piso?: string;
   unidad_medida?: string;
   precio_unitario?: number;
   anos_vencimiento?: number;
@@ -132,9 +241,29 @@ export interface ProductoCreate {
 }
 
 export interface ProductoUpdate {
-  codigo?: string;
   nombre?: string;
   descripcion?: string;
+  formato_lote?: string;
+  cliente_id?: number;
+  tipo_producto?: string;
+  color_banda?: string;
+  codigo_producto?: string;
+  densidad?: number;
+  bidon_proveedor?: string;
+  bidon_descripcion?: string;
+  tapa_proveedor?: string;
+  tapa_descripcion?: string;
+  pallet_proveedor?: string;
+  pallet_descripcion?: string;
+  cobertor_proveedor?: string;
+  cobertor_descripcion?: string;
+  funda_etiqueta_proveedor?: string;
+  funda_etiqueta_descripcion?: string;
+  esquinero_proveedor?: string;
+  esquinero_descripcion?: string;
+  litros_por_pallet?: number;
+  bidones_por_pallet?: number;
+  bidones_por_piso?: string;
   unidad_medida?: string;
   precio_unitario?: number;
   anos_vencimiento?: number;
@@ -408,6 +537,16 @@ export const authApi = {
     const response = await api.get<User>("/auth/me");
     return response.data;
   },
+
+  updateProfile: async (data: UserProfileUpdate): Promise<User> => {
+    const response = await api.put<User>("/auth/me", data);
+    return response.data;
+  },
+
+  changePassword: async (data: PasswordChange): Promise<{ message: string }> => {
+    const response = await api.put<{ message: string }>("/auth/me/password", data);
+    return response.data;
+  },
 };
 
 // Funciones para Sectores
@@ -651,6 +790,48 @@ export interface EstadisticasGenerales {
     fecha_hasta: string | null;
   };
 }
+
+// Funciones para Usuarios (Admin)
+export const usersApi = {
+  list: async (params?: UsersListParams): Promise<User[]> => {
+    const response = await api.get<User[]>("/users", { params });
+    return response.data;
+  },
+
+  get: async (id: number): Promise<User> => {
+    const response = await api.get<User>(`/users/${id}`);
+    return response.data;
+  },
+
+  create: async (data: UserAdminCreate): Promise<User> => {
+    const response = await api.post<User>("/users", data);
+    return response.data;
+  },
+
+  update: async (id: number, data: UserAdminUpdate): Promise<User> => {
+    const response = await api.put<User>(`/users/${id}`, data);
+    return response.data;
+  },
+
+  delete: async (id: number): Promise<void> => {
+    await api.delete(`/users/${id}`);
+  },
+
+  resetPassword: async (id: number, data: UserResetPassword): Promise<{ message: string }> => {
+    const response = await api.put<{ message: string }>(`/users/${id}/reset-password`, data);
+    return response.data;
+  },
+
+  toggleActive: async (id: number): Promise<User> => {
+    const response = await api.put<User>(`/users/${id}/toggle-active`);
+    return response.data;
+  },
+
+  getRoles: async (): Promise<Role[]> => {
+    const response = await api.get<Role[]>("/users/roles");
+    return response.data;
+  },
+};
 
 // Funciones para Historial
 export const historialApi = {

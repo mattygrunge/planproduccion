@@ -8,6 +8,7 @@ class Linea(Base):
     __tablename__ = "lineas"
 
     id = Column(Integer, primary_key=True, index=True)
+    codigo = Column(String(20), unique=True, nullable=False, index=True)
     nombre = Column(String(100), nullable=False, index=True)
     descripcion = Column(String(255), nullable=True)
     sector_id = Column(Integer, ForeignKey("sectores.id"), nullable=False)

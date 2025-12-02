@@ -512,6 +512,20 @@
   gap: var(--spacing-md);
 }
 
+/* Section titles within forms */
+.section-title {
+  margin: var(--spacing-lg) 0 var(--spacing-md) 0;
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 2px solid var(--color-primary);
+  color: var(--color-primary);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+}
+
+.section-title:first-child {
+  margin-top: 0;
+}
+
 .modal-footer {
   display: flex;
   justify-content: flex-end;

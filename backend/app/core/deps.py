@@ -57,3 +57,7 @@ def get_current_active_admin(current_user: User = Depends(get_current_user)) -> 
             detail="No tienes permisos de administrador"
         )
     return current_user
+
+
+# Alias para compatibilidad
+get_admin_user = get_current_active_admin

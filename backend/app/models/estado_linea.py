@@ -42,6 +42,7 @@ class EstadoLinea(Base):
     __tablename__ = "estados_linea"
 
     id = Column(Integer, primary_key=True, index=True)
+    codigo = Column(String(20), unique=True, nullable=False, index=True)
     
     # Relaciones con sector y línea
     sector_id = Column(Integer, ForeignKey("sectores.id"), nullable=False)

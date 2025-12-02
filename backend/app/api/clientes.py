@@ -6,6 +6,7 @@ import math
 
 from app.core.database import get_db
 from app.core.deps import get_current_user, get_current_active_admin
+from app.core.id_generator import generar_codigo_cliente
 from app.models.user import User
 from app.models.cliente import Cliente
 from app.schemas.cliente import ClienteCreate, ClienteUpdate, ClienteResponse, ClienteList
@@ -75,14 +76,6 @@ def crear_cliente(
     current_user: User = Depends(get_current_active_admin)
 ):
     """Crea un nuevo cliente. Solo para administradores."""
-    # Verificar si ya existe el código
-    existing = db.query(Cliente).filter(Cliente.codigo == cliente_data.codigo).first()
-    if existing:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Ya existe un cliente con ese código"
-        )
-    
     # Verificar CUIT duplicado si se proporciona
     if cliente_data.cuit:
         existing_cuit = db.query(Cliente).filter(Cliente.cuit == cliente_data.cuit).first()
@@ -92,7 +85,10 @@ def crear_cliente(
                 detail="Ya existe un cliente con ese CUIT"
             )
     
-    cliente = Cliente(**cliente_data.model_dump())
+    # Generar código automático
+    codigo = generar_codigo_cliente(db)
+    
+    cliente = Cliente(codigo=codigo, **cliente_data.model_dump())
     db.add(cliente)
     
     try:
@@ -122,15 +118,6 @@ def actualizar_cliente(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Cliente no encontrado"
         )
-    
-    # Verificar código duplicado si se está cambiando
-    if cliente_data.codigo and cliente_data.codigo != cliente.codigo:
-        existing = db.query(Cliente).filter(Cliente.codigo == cliente_data.codigo).first()
-        if existing:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Ya existe un cliente con ese código"
-            )
     
     # Verificar CUIT duplicado si se está cambiando
     if cliente_data.cuit and cliente_data.cuit != cliente.cuit:

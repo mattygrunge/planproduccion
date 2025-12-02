@@ -41,13 +41,36 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const login = async (newToken: string) => {
     localStorage.setItem("token", newToken);
     setToken(newToken);
-    // El useEffect se encargará de cargar el usuario
+    
+    // Cargar el usuario inmediatamente después de guardar el token
+    try {
+      const userData = await authApi.getMe();
+      setUser(userData);
+    } catch (error) {
+      console.error("Error al cargar usuario después del login:", error);
+      // Si falla, limpiar el token
+      localStorage.removeItem("token");
+      setToken(null);
+      setUser(null);
+      throw error; // Propagar el error para que Login.tsx pueda manejarlo
+    }
   };
 
   const logout = () => {
     localStorage.removeItem("token");
     setToken(null);
     setUser(null);
+  };
+
+  const refreshUser = async () => {
+    if (token) {
+      try {
+        const userData = await authApi.getMe();
+        setUser(userData);
+      } catch (error) {
+        console.error("Error al refrescar usuario:", error);
+      }
+    }
   };
 
   return (
@@ -59,6 +82,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         isAuthenticated,
         login,
         logout,
+        refreshUser,
       }}
     >
       {children}

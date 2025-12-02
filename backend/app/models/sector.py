@@ -8,6 +8,7 @@ class Sector(Base):
     __tablename__ = "sectores"
 
     id = Column(Integer, primary_key=True, index=True)
+    codigo = Column(String(20), unique=True, nullable=False, index=True)
     nombre = Column(String(100), unique=True, nullable=False, index=True)
     descripcion = Column(String(255), nullable=True)
     activo = Column(Boolean, default=True)

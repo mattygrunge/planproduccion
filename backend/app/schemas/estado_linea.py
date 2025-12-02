@@ -56,6 +56,7 @@ class EstadoLineaUpdate(BaseModel):
 
 class SectorMinimal(BaseModel):
     id: int
+    codigo: str
     nombre: str
 
     class Config:
@@ -64,6 +65,7 @@ class SectorMinimal(BaseModel):
 
 class LineaMinimal(BaseModel):
     id: int
+    codigo: str
     nombre: str
 
     class Config:
@@ -72,6 +74,7 @@ class LineaMinimal(BaseModel):
 
 class UsuarioMinimal(BaseModel):
     id: int
+    codigo: str
     username: str
     full_name: Optional[str] = None
 
@@ -81,6 +84,7 @@ class UsuarioMinimal(BaseModel):
 
 class EstadoLineaResponse(BaseModel):
     id: int
+    codigo: str
     sector_id: int
     linea_id: int
     tipo_estado: str

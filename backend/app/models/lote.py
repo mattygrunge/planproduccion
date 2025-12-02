@@ -13,6 +13,7 @@ class Lote(Base):
     __tablename__ = "lotes"
 
     id = Column(Integer, primary_key=True, index=True)
+    codigo = Column(String(20), unique=True, nullable=False, index=True)
     
     # Número de lote (ej: "2024001", "L-001", etc.)
     numero_lote = Column(String(50), nullable=False, index=True)

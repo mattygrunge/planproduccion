@@ -8,6 +8,7 @@ import math
 from app.core.database import get_db
 from app.core.deps import get_current_user, get_current_active_admin
 from app.core.audit import audit_crear, audit_editar, audit_eliminar, get_client_info, _model_to_dict
+from app.core.id_generator import generar_codigo_estado_linea
 from app.models.user import User
 from app.models.estado_linea import EstadoLinea
 from app.models.sector import Sector
@@ -284,8 +285,12 @@ def crear_estado(
         delta = estado_data.fecha_hora_fin - estado_data.fecha_hora_inicio
         duracion_minutos = int(delta.total_seconds() / 60)
     
+    # Generar código automático
+    codigo = generar_codigo_estado_linea(db)
+    
     # Crear el estado
     estado_dict = estado_data.model_dump()
+    estado_dict['codigo'] = codigo
     estado_dict['tipo_estado'] = estado_data.tipo_estado.value
     estado_dict['duracion_minutos'] = duracion_minutos
     estado_dict['usuario_id'] = current_user.id

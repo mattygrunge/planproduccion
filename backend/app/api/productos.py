@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Query, Request
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from sqlalchemy.exc import IntegrityError
 from typing import Optional
 import math
@@ -7,8 +7,11 @@ import math
 from app.core.database import get_db
 from app.core.deps import get_current_user, get_current_active_admin
 from app.core.audit import audit_crear, audit_editar, audit_eliminar, get_client_info, _model_to_dict
+from app.core.id_generator import generar_codigo_producto
 from app.models.user import User
 from app.models.producto import Producto
+from app.models.lote import Lote
+from app.models.cliente import Cliente
 from app.schemas.producto import ProductoCreate, ProductoUpdate, ProductoResponse, ProductoList
 
 router = APIRouter(prefix="/productos", tags=["Productos"])
@@ -20,20 +23,25 @@ def listar_productos(
     size: int = Query(10, ge=1, le=100, description="Tamaño de página"),
     search: Optional[str] = Query(None, description="Buscar por código o nombre"),
     activo: Optional[bool] = Query(None, description="Filtrar por estado activo"),
+    cliente_id: Optional[int] = Query(None, description="Filtrar por cliente"),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
     """Lista todos los productos con paginación y filtros."""
-    query = db.query(Producto)
+    query = db.query(Producto).options(joinedload(Producto.cliente))
     
     # Filtros
     if search:
         query = query.filter(
             (Producto.codigo.ilike(f"%{search}%")) | 
-            (Producto.nombre.ilike(f"%{search}%"))
+            (Producto.nombre.ilike(f"%{search}%")) |
+            (Producto.codigo_producto.ilike(f"%{search}%")) |
+            (Producto.formato_lote.ilike(f"%{search}%"))
         )
     if activo is not None:
         query = query.filter(Producto.activo == activo)
+    if cliente_id is not None:
+        query = query.filter(Producto.cliente_id == cliente_id)
     
     # Contar total
     total = query.count()
@@ -59,7 +67,7 @@ def obtener_producto(
     current_user: User = Depends(get_current_user)
 ):
     """Obtiene un producto por su ID."""
-    producto = db.query(Producto).filter(Producto.id == producto_id).first()
+    producto = db.query(Producto).options(joinedload(Producto.cliente)).filter(Producto.id == producto_id).first()
     if not producto:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -76,15 +84,19 @@ def crear_producto(
     current_user: User = Depends(get_current_active_admin)
 ):
     """Crea un nuevo producto. Solo para administradores."""
-    # Verificar si ya existe el código
-    existing = db.query(Producto).filter(Producto.codigo == producto_data.codigo).first()
-    if existing:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Ya existe un producto con ese código"
-        )
+    # Verificar que el cliente existe si se proporciona
+    if producto_data.cliente_id:
+        cliente = db.query(Cliente).filter(Cliente.id == producto_data.cliente_id).first()
+        if not cliente:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="El cliente especificado no existe"
+            )
     
-    producto = Producto(**producto_data.model_dump())
+    # Generar código automático
+    codigo = generar_codigo_producto(db)
+    
+    producto = Producto(codigo=codigo, **producto_data.model_dump())
     db.add(producto)
     
     try:
@@ -110,6 +122,8 @@ def crear_producto(
             detail="Error al crear el producto"
         )
     
+    # Recargar con relación cliente
+    db.refresh(producto)
     return producto
 
 
@@ -129,17 +143,17 @@ def actualizar_producto(
             detail="Producto no encontrado"
         )
     
-    # Guardar datos anteriores para auditoría
-    datos_anteriores = _model_to_dict(producto)
-    
-    # Verificar código duplicado si se está cambiando
-    if producto_data.codigo and producto_data.codigo != producto.codigo:
-        existing = db.query(Producto).filter(Producto.codigo == producto_data.codigo).first()
-        if existing:
+    # Verificar que el cliente existe si se proporciona
+    if producto_data.cliente_id:
+        cliente = db.query(Cliente).filter(Cliente.id == producto_data.cliente_id).first()
+        if not cliente:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Ya existe un producto con ese código"
+                detail="El cliente especificado no existe"
             )
+    
+    # Guardar datos anteriores para auditoría
+    datos_anteriores = _model_to_dict(producto)
     
     # Actualizar solo los campos proporcionados
     update_data = producto_data.model_dump(exclude_unset=True)
@@ -186,6 +200,14 @@ def eliminar_producto(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Producto no encontrado"
+        )
+    
+    # Verificar si tiene lotes asociados
+    lotes_count = db.query(Lote).filter(Lote.producto_id == producto_id).count()
+    if lotes_count > 0:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"No se puede eliminar el producto porque tiene {lotes_count} lote(s) asociado(s). Elimine primero los lotes relacionados."
         )
     
     # Registrar auditoría antes de eliminar

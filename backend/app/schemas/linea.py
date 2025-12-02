@@ -23,6 +23,7 @@ class LineaUpdate(BaseModel):
 
 class SectorMinimal(BaseModel):
     id: int
+    codigo: str
     nombre: str
 
     class Config:
@@ -31,6 +32,7 @@ class SectorMinimal(BaseModel):
 
 class LineaResponse(BaseModel):
     id: int
+    codigo: str
     nombre: str
     descripcion: Optional[str] = None
     sector_id: int

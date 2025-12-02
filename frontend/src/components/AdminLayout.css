@@ -107,7 +107,7 @@
 
 /* Sidebar toggle button - positioned below header */
 .sidebar-toggle {
-  margin: 0 auto var(--spacing-sm);
+  margin: var(--spacing-md) auto var(--spacing-sm);
   width: calc(100% - var(--spacing-lg) * 2);
   max-width: none;
   height: 32px;
@@ -203,8 +203,51 @@
   border-top: 1px solid rgba(255, 255, 255, 0.15);
 }
 
+/* User Info Link */
+.user-info-link {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  margin: 0 calc(-1 * var(--spacing-md)) var(--spacing-sm);
+  text-decoration: none;
+  color: var(--color-white);
+  transition: all var(--transition-fast);
+  border-radius: var(--border-radius-md);
+  background: transparent;
+}
+
+.user-info-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.user-info-link.active {
+  background: rgba(157, 223, 44, 0.2);
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all var(--transition-fast);
+}
+
+.user-info-link:hover .user-avatar {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.user-info-link.active .user-avatar {
+  background: rgba(157, 223, 44, 0.3);
+}
+
 .user-info {
-  margin-bottom: var(--spacing-sm);
+  flex: 1;
+  min-width: 0;
 }
 
 .user-name {
@@ -212,6 +255,9 @@
   font-weight: 600;
   font-size: var(--font-size-base);
   color: var(--color-white);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .user-role {
@@ -219,11 +265,33 @@
   font-size: var(--font-size-sm);
   color: rgba(255, 255, 255, 0.6);
   text-transform: capitalize;
-  margin-top: var(--spacing-xs);
+  margin-top: 2px;
 }
 
-.sidebar.closed .user-info {
+.settings-icon {
+  flex-shrink: 0;
+  opacity: 0.5;
+  transition: opacity var(--transition-fast);
+}
+
+.user-info-link:hover .settings-icon {
+  opacity: 1;
+}
+
+.sidebar.closed .user-info,
+.sidebar.closed .settings-icon {
   display: none;
+}
+
+.sidebar.closed .user-info-link {
+  justify-content: center;
+  padding: var(--spacing-sm);
+  margin: 0 0 var(--spacing-sm);
+}
+
+.sidebar.closed .user-avatar {
+  width: 32px;
+  height: 32px;
 }
 
 .logout-btn {

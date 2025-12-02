@@ -4,6 +4,8 @@ import {
   ChevronLeft,
   ChevronRight,
   RefreshCw,
+  ClipboardList,
+  AlertTriangle,
 } from "lucide-react";
 import {
   estadosLineaApi,
@@ -300,7 +302,7 @@ function Timeline() {
           </div>
         ) : error ? (
           <div className="timeline-empty">
-            <div className="timeline-empty-icon">⚠️</div>
+            <AlertTriangle className="timeline-empty-icon-svg" size={48} strokeWidth={1.5} />
             <p>{error}</p>
             <button className="btn-refresh" onClick={loadTimelineData}>
               Reintentar
@@ -310,7 +312,7 @@ function Timeline() {
           timelineData.sectores.length === 0 ||
           timelineData.sectores.every((s) => s.lineas.length === 0) ? (
           <div className="timeline-empty">
-            <div className="timeline-empty-icon">📋</div>
+            <ClipboardList className="timeline-empty-icon-svg" size={48} strokeWidth={1.5} />
             <p>No hay líneas configuradas para mostrar</p>
           </div>
         ) : (
