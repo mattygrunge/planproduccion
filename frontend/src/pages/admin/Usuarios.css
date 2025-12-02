@@ -17,7 +17,7 @@
   font-weight: 600;
 }
 
-/* Role badges */
+/* Role badges - Usando colores del tema */
 .usuarios-page .role-badge {
   display: inline-flex;
   padding: 0.25rem 0.75rem;
@@ -27,23 +27,23 @@
 }
 
 .usuarios-page .role-badge.role-admin {
-  background: linear-gradient(135deg, #1a7268, #145D58);
-  color: #ffffff;
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-hover));
+  color: var(--color-white);
 }
 
 .usuarios-page .role-badge.role-operator,
 .usuarios-page .role-badge.role-operador {
-  background: rgba(59, 130, 246, 0.15);
-  color: #3b82f6;
+  background: rgba(157, 223, 44, 0.15);
+  color: var(--color-secondary-hover);
 }
 
 .usuarios-page .role-badge.role-viewer,
 .usuarios-page .role-badge.role-visor {
   background: rgba(107, 114, 128, 0.15);
-  color: #6b7280;
+  color: var(--color-text-light);
 }
 
-/* Status badges */
+/* Status badges - Usando colores del tema */
 .usuarios-page .status-badge {
   display: inline-flex;
   padding: 0.25rem 0.75rem;
@@ -53,13 +53,13 @@
 }
 
 .usuarios-page .status-badge.active {
-  background: rgba(34, 197, 94, 0.15);
-  color: #22c55e;
+  background: rgba(79, 174, 78, 0.15);
+  color: var(--color-primary);
 }
 
 .usuarios-page .status-badge.inactive {
-  background: rgba(239, 68, 68, 0.15);
-  color: #ef4444;
+  background: rgba(217, 83, 79, 0.15);
+  color: var(--color-danger);
 }
 
 /* Inactive row */
@@ -68,29 +68,45 @@
   background: #fafafa;
 }
 
-/* Action buttons specific */
+/* Action buttons specific - Colores consistentes */
+.usuarios-page .action-btn.edit {
+  color: var(--color-secondary);
+}
+
+.usuarios-page .action-btn.edit:hover:not(:disabled) {
+  background: rgba(157, 223, 44, 0.1);
+}
+
 .usuarios-page .action-btn.password {
-  color: #8b5cf6;
+  color: var(--color-accent);
 }
 
 .usuarios-page .action-btn.password:hover:not(:disabled) {
-  background: rgba(139, 92, 246, 0.1);
+  background: rgba(26, 117, 111, 0.1);
 }
 
 .usuarios-page .action-btn.deactivate {
-  color: #f59e0b;
+  color: var(--color-text-light);
 }
 
 .usuarios-page .action-btn.deactivate:hover:not(:disabled) {
-  background: rgba(245, 158, 11, 0.1);
+  background: rgba(107, 114, 128, 0.1);
 }
 
 .usuarios-page .action-btn.activate {
-  color: #22c55e;
+  color: var(--color-primary);
 }
 
 .usuarios-page .action-btn.activate:hover:not(:disabled) {
-  background: rgba(34, 197, 94, 0.1);
+  background: rgba(79, 174, 78, 0.1);
+}
+
+.usuarios-page .action-btn.delete {
+  color: var(--color-danger);
+}
+
+.usuarios-page .action-btn.delete:hover:not(:disabled) {
+  background: rgba(217, 83, 79, 0.1);
 }
 
 /* Password input wrapper */

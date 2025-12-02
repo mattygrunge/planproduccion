@@ -83,7 +83,7 @@
 
 /* Info Section - Horizontal Cards */
 .info-section h2 {
-  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-hover));
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-hover));
 }
 
 .info-grid {
@@ -156,13 +156,13 @@
   color: var(--color-danger);
 }
 
-/* Profile & Password Sections */
+/* Profile & Password Sections - Usar colores consistentes */
 .profile-section h2 {
-  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-hover));
 }
 
 .password-section h2 {
-  background: linear-gradient(135deg, #f59e0b, #d97706);
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-hover));
 }
 
 /* Form Styles */
