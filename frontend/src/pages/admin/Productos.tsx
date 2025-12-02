@@ -94,7 +94,7 @@ const Productos = () => {
 
   const fetchClientes = async () => {
     try {
-      const response = await clientesApi.list({ size: 1000 });
+      const response = await clientesApi.list({ size: 1000, activo: true });
       setClientes(response.items);
     } catch (err) {
       console.error("Error al cargar clientes:", err);

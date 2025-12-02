@@ -20,7 +20,7 @@ router = APIRouter(prefix="/productos", tags=["Productos"])
 @router.get("", response_model=ProductoList)
 def listar_productos(
     page: int = Query(1, ge=1, description="Número de página"),
-    size: int = Query(10, ge=1, le=100, description="Tamaño de página"),
+    size: int = Query(10, ge=1, le=1000, description="Tamaño de página"),
     search: Optional[str] = Query(None, description="Buscar por código o nombre"),
     activo: Optional[bool] = Query(None, description="Filtrar por estado activo"),
     cliente_id: Optional[int] = Query(None, description="Filtrar por cliente"),

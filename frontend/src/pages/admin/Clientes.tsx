@@ -4,7 +4,6 @@ import { clientesApi } from "../../api/api";
 import type {
   Cliente,
   ClienteCreate,
-  ClienteUpdate,
   PaginatedResponse,
 } from "../../api/api";
 import "./AdminPages.css";
@@ -108,20 +107,22 @@ const Clientes = () => {
     setSaving(true);
 
     try {
+      // Preparar datos limpiando strings vacías para campos opcionales
+      const cleanData: ClienteCreate = {
+        nombre: formData.nombre,
+        razon_social: formData.razon_social?.trim() || undefined,
+        cuit: formData.cuit?.trim() || undefined,
+        direccion: formData.direccion?.trim() || undefined,
+        telefono: formData.telefono?.trim() || undefined,
+        email: formData.email?.trim() || undefined,
+        contacto: formData.contacto?.trim() || undefined,
+        activo: formData.activo,
+      };
+
       if (editingItem) {
-        const updateData: ClienteUpdate = {
-          nombre: formData.nombre,
-          razon_social: formData.razon_social || undefined,
-          cuit: formData.cuit || undefined,
-          direccion: formData.direccion || undefined,
-          telefono: formData.telefono || undefined,
-          email: formData.email || undefined,
-          contacto: formData.contacto || undefined,
-          activo: formData.activo,
-        };
-        await clientesApi.update(editingItem.id, updateData);
+        await clientesApi.update(editingItem.id, cleanData);
       } else {
-        await clientesApi.create(formData);
+        await clientesApi.create(cleanData);
       }
       closeModal();
       fetchData();
@@ -181,7 +182,7 @@ const Clientes = () => {
               <thead>
                 <tr>
                   <th>Código</th>
-                  <th>Nombre</th>
+                  <th>Empresa</th>
                   <th>CUIT</th>
                   <th>Teléfono</th>
                   <th>Email</th>
@@ -271,6 +272,20 @@ const Clientes = () => {
             <form onSubmit={handleSubmit}>
               <div className="form-row">
                 <div className="form-group">
+                  <label htmlFor="nombre">Empresa *</label>
+                  <input
+                    type="text"
+                    id="nombre"
+                    value={formData.nombre}
+                    onChange={(e) =>
+                      setFormData({ ...formData, nombre: e.target.value })
+                    }
+                    required
+                    maxLength={200}
+                    placeholder="Nombre de la empresa"
+                  />
+                </div>
+                <div className="form-group">
                   <label htmlFor="cuit">CUIT</label>
                   <input
                     type="text"
@@ -283,19 +298,6 @@ const Clientes = () => {
                     placeholder="XX-XXXXXXXX-X"
                   />
                 </div>
-              </div>
-              <div className="form-group">
-                <label htmlFor="nombre">Nombre *</label>
-                <input
-                  type="text"
-                  id="nombre"
-                  value={formData.nombre}
-                  onChange={(e) =>
-                    setFormData({ ...formData, nombre: e.target.value })
-                  }
-                  required
-                  maxLength={200}
-                />
               </div>
               <div className="form-group">
                 <label htmlFor="razon_social">Razón Social</label>
