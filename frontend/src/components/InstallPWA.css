@@ -1,0 +1,498 @@
+/* ============================================
+   PWA Install Button Styles
+   ============================================ */
+
+/* Botón principal de instalación */
+.pwa-install-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: linear-gradient(135deg, #4FAE4E 0%, #3d9140 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(79, 174, 78, 0.3);
+}
+
+.pwa-install-btn:hover {
+  background: linear-gradient(135deg, #5bc45a 0%, #4FAE4E 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(79, 174, 78, 0.4);
+}
+
+.pwa-install-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(79, 174, 78, 0.3);
+}
+
+/* Botón compacto para sidebar */
+.pwa-install-btn-compact {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  background: rgba(79, 174, 78, 0.15);
+  color: #4FAE4E;
+  border: 1px solid rgba(79, 174, 78, 0.3);
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.pwa-install-btn-compact:hover {
+  background: rgba(79, 174, 78, 0.25);
+  border-color: rgba(79, 174, 78, 0.5);
+}
+
+.pwa-install-btn-compact:active {
+  background: rgba(79, 174, 78, 0.3);
+}
+
+.pwa-install-btn-compact svg {
+  flex-shrink: 0;
+}
+
+/* ============================================
+   iOS Install Banner (Simple)
+   ============================================ */
+
+.ios-install-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-top: 1px solid #e0e0e0;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  z-index: 9999;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.ios-install-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: #f5f5f5;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #666;
+  transition: all 0.2s;
+}
+
+.ios-install-close:hover {
+  background: #e0e0e0;
+  color: #333;
+}
+
+.ios-install-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.ios-install-icon {
+  display: flex;
+  justify-content: center;
+  color: #4FAE4E;
+}
+
+.ios-install-text {
+  text-align: center;
+}
+
+.ios-install-text h3 {
+  margin: 0 0 4px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.ios-install-text p {
+  margin: 0;
+  font-size: 13px;
+  color: #666;
+}
+
+.ios-install-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.ios-step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.ios-step-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: white;
+  border-radius: 8px;
+  color: #4FAE4E;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.ios-step span {
+  font-size: 13px;
+  color: #333;
+}
+
+.ios-step strong {
+  color: #1a1a1a;
+}
+
+/* ============================================
+   iOS Install Modal
+   ============================================ */
+
+.ios-install-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: 20px;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.ios-install-modal {
+  background: white;
+  border-radius: 16px;
+  max-width: 380px;
+  width: 100%;
+  padding: 24px;
+  position: relative;
+  animation: scaleIn 0.3s ease;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.ios-modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: #f5f5f5;
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #666;
+  transition: all 0.2s;
+}
+
+.ios-modal-close:hover {
+  background: #e0e0e0;
+  color: #333;
+}
+
+.ios-modal-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.ios-modal-icon {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 16px;
+  background: linear-gradient(135deg, #4FAE4E 0%, #3d9140 100%);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(79, 174, 78, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.ios-modal-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 16px;
+}
+
+.ios-modal-fallback-icon {
+  color: white;
+  position: absolute;
+}
+
+.ios-modal-icon img + .ios-modal-fallback-icon {
+  display: none;
+}
+
+.ios-modal-header h2 {
+  margin: 0 0 8px 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.ios-modal-header p {
+  margin: 0;
+  font-size: 14px;
+  color: #666;
+}
+
+.ios-modal-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.ios-modal-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.ios-modal-step-number {
+  width: 28px;
+  height: 28px;
+  background: #4FAE4E;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.ios-modal-step-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 10px;
+}
+
+.ios-modal-step-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: white;
+  border-radius: 10px;
+  color: #4FAE4E;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  flex-shrink: 0;
+}
+
+.ios-modal-step-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ios-modal-step-text strong {
+  font-size: 14px;
+  color: #1a1a1a;
+}
+
+.ios-modal-step-text span {
+  font-size: 12px;
+  color: #888;
+}
+
+.ios-modal-dismiss {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #4FAE4E 0%, #3d9140 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.ios-modal-dismiss:hover {
+  background: linear-gradient(135deg, #5bc45a 0%, #4FAE4E 100%);
+  transform: translateY(-1px);
+}
+
+.ios-modal-dismiss:active {
+  transform: translateY(0);
+}
+
+/* ============================================
+   Responsive Adjustments
+   ============================================ */
+
+@media (max-width: 480px) {
+  .ios-install-modal {
+    padding: 20px;
+    margin: 10px;
+    max-width: calc(100% - 20px);
+  }
+  
+  .ios-modal-icon {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .ios-modal-header h2 {
+    font-size: 18px;
+  }
+  
+  .ios-modal-step-content {
+    padding: 10px;
+  }
+  
+  .ios-modal-step-icon {
+    width: 38px;
+    height: 38px;
+  }
+  
+  .ios-modal-step-text strong {
+    font-size: 13px;
+  }
+  
+  .ios-modal-step-text span {
+    font-size: 11px;
+  }
+}
+
+/* ============================================
+   Dark Mode Support (if implemented)
+   ============================================ */
+
+@media (prefers-color-scheme: dark) {
+  .ios-install-banner {
+    background: #1e1e1e;
+    border-top-color: #333;
+  }
+  
+  .ios-install-text h3 {
+    color: #fff;
+  }
+  
+  .ios-install-text p {
+    color: #aaa;
+  }
+  
+  .ios-step {
+    background: #2a2a2a;
+  }
+  
+  .ios-step-icon {
+    background: #333;
+  }
+  
+  .ios-step span {
+    color: #ddd;
+  }
+  
+  .ios-step strong {
+    color: #fff;
+  }
+  
+  .ios-install-modal {
+    background: #1e1e1e;
+  }
+  
+  .ios-modal-header h2 {
+    color: #fff;
+  }
+  
+  .ios-modal-header p {
+    color: #aaa;
+  }
+  
+  .ios-modal-step-content {
+    background: #2a2a2a;
+  }
+  
+  .ios-modal-step-icon {
+    background: #333;
+  }
+  
+  .ios-modal-step-text strong {
+    color: #fff;
+  }
+  
+  .ios-modal-step-text span {
+    color: #888;
+  }
+  
+  .ios-modal-close,
+  .ios-install-close {
+    background: #333;
+    color: #aaa;
+  }
+  
+  .ios-modal-close:hover,
+  .ios-install-close:hover {
+    background: #444;
+    color: #fff;
+  }
+}

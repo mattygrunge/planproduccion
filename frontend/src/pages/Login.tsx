@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Download, Smartphone } from "lucide-react";
 import { authApi } from "../api/api";
 import { useAuth } from "../hooks/useAuth";
+import { usePWAInstall } from "../hooks/usePWAInstall";
+import { IOSInstallModal } from "../components/InstallPWA";
 import "./Login.css";
 
 export default function Login() {
@@ -15,6 +17,7 @@ export default function Login() {
   
   const { login } = useAuth();
   const navigate = useNavigate();
+  const { canInstall, install, isIOSDevice, isInstalled, showIOSInstallGuide } = usePWAInstall();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -114,7 +117,28 @@ export default function Login() {
             {loading ? "Iniciando sesión..." : "Ingresar"}
           </button>
         </form>
+        
+        {/* Botón de instalación PWA */}
+        {!isInstalled && (canInstall || isIOSDevice) && (
+          <div className="pwa-install-section">
+            <button 
+              type="button"
+              className="pwa-login-install-btn"
+              onClick={canInstall ? install : showIOSInstallGuide}
+            >
+              {isIOSDevice ? (
+                <Smartphone size={18} strokeWidth={1.5} />
+              ) : (
+                <Download size={18} strokeWidth={1.5} />
+              )}
+              <span>Instalar NexxaPlus</span>
+            </button>
+          </div>
+        )}
       </div>
+      
+      {/* Modal de instrucciones iOS */}
+      <IOSInstallModal />
     </div>
   );
 }

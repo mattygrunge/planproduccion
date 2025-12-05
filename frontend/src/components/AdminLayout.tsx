@@ -18,6 +18,7 @@ import {
   User,
   Settings,
 } from "lucide-react";
+import { InstallButtonCompact, IOSInstallModal } from "./InstallPWA";
 import "./AdminLayout.css";
 
 const AdminLayout = () => {
@@ -156,6 +157,9 @@ const AdminLayout = () => {
 
         {/* Footer del Sidebar */}
         <div className="sidebar-footer">
+          {/* Botón de instalación PWA */}
+          <InstallButtonCompact collapsed={!sidebarOpen} />
+          
           <Link 
             to="/account" 
             className={`user-info-link ${location.pathname === "/account" ? "active" : ""}`}
@@ -183,6 +187,9 @@ const AdminLayout = () => {
           <Outlet />
         </div>
       </main>
+      
+      {/* Modal de instrucciones iOS */}
+      <IOSInstallModal />
     </div>
   );
 };
